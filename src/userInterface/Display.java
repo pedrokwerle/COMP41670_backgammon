@@ -3,7 +3,6 @@ package userInterface;
 
 // Character display
 public class Display {
-    //TODO: implement color support on the display
     PixelAscii[][] pixelGrid;
     int rowsNum;
     int colsNum;
