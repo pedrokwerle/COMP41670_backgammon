@@ -17,7 +17,7 @@ public class LaneUpward extends Lane{
         }
         else {
             int xPos = 0;
-            int yPos = 0;
+            int yPos = -1;
             for (Checker checker : checkers) {
                 this.asciiArt.addComponent(checker, xPos, yPos);
                 xPos += 0;

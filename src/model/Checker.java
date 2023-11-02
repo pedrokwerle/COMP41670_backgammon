@@ -11,13 +11,14 @@ public class Checker implements Displayable {
 
 
 
-    public Checker(){
+    public Checker(ColorsAscii color){
         this.asciiArt = new AsciiArt("src/model/checker.txt");
-
+        this.color = color;
     }
 
     // AsciiArt section
     AsciiArt asciiArt;
+    ColorsAscii color;
     @Override
     public void renderArt() {
         try {
@@ -25,6 +26,15 @@ public class Checker implements Displayable {
             this.asciiArt.loadArt();
         } catch (Exception e) {
             System.out.println("File read error");
+        }
+
+        int height = this.asciiArt.getUniqueArt().size();
+        int lenght;
+        for (int row = 0; row < height; row++) {
+            lenght = this.asciiArt.getUniqueArt().get(row).size();
+            for (int col = 0; col < lenght; col++) {
+                 this.asciiArt.getUniqueArt().get(row).get(col).setColor(this.color);
+            }
         }
     }
 
