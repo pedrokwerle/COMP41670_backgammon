@@ -1,7 +1,5 @@
-import model.Checker;
-import model.LaneDownward;
-import userInterface.ColorsAscii;
-import userInterface.DisplayManager;
+
+import userInterface.*;
 import model.*;
 import java.util.*;
 
@@ -99,8 +97,40 @@ public class Main {
             color = ColorsAscii.WHITE;
 
         }
-
-
         displayManager.printDisplay();
+
+        // Initialization complete
+        Player playerTurn = player1;
+        while(true){
+            Keyboard key = new Keyboard();
+            System.out.println(playerTurn.getPlayerName()+" please enter your command: ");
+            String input =  key.getString();
+            input = input.toLowerCase();
+            ArrayList<Dice> die = new ArrayList<>();
+            if (Objects.equals(input, "quit")) System.exit(42);
+            else if (Objects.equals(input, "roll")) {
+                die = playerTurn.rollMoves();
+                displayManager.addToCache(die.get(0),25,11);
+                displayManager.addToCache(die.get(1),74,11);
+            }
+            else {
+
+            }
+
+
+
+
+            if(Objects.equals(playerTurn, player1)){
+                playerTurn = player2;
+            }
+            else{
+                playerTurn = player1;
+            }
+
+            displayManager.printDisplay();
+        }
+
+
+
     }
 }

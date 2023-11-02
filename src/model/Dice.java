@@ -44,7 +44,7 @@ public class Dice implements Displayable {
                 charc = this.asciiArt.getUniqueArt().get(row).get(col).getCharacter();
                 switch (charc) {
                     case 'V': // Rank modifier
-                        charc = (char) this.value;
+                        charc = (char) (this.value + 48);
                         this.asciiArt.getUniqueArt().get(row).get(col).setCharacter(charc);
                         this.asciiArt.getUniqueArt().get(row).get(col).setColor(ColorsAscii.WHITE);
                         break;
@@ -60,7 +60,7 @@ public class Dice implements Displayable {
 
     @Override
     public AsciiArt getArt() {
-        return null;
+        return this.asciiArt;
     }
 }
 
