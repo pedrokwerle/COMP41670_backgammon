@@ -18,6 +18,10 @@ public class Dice implements Displayable {
         return value;
     }
 
+    public int getValue(){
+        return this.value;
+    }
+
 
 
     //AsciiArt section

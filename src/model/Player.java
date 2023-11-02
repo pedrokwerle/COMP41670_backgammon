@@ -4,11 +4,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Player {
-    private final ArrayList<Integer> rolls = new ArrayList<Integer>();
-    Dice playerDice = new Dice();
+    ArrayList<Dice> moveDice = new ArrayList<>();
     private String playerName;
     public Player(String playerName){
         this.playerName = playerName;
+        moveDice.add(new Dice());
+        moveDice.add(new Dice());
     }
 
     public void setPlayerName(String playerName){
@@ -19,15 +20,9 @@ public class Player {
         return this.playerName;
     }
 
-    public int roll1(){
-        return this.playerDice.rollDice();
-    }
-
-    public ArrayList<Integer> rollMoves(){
-        this.rolls.clear();
-        this.rolls.add(this.playerDice.rollDice());
-        this.rolls.add(this.playerDice.rollDice());
-
-        return rolls;
+    public ArrayList<Dice> rollMoves(){
+        this.moveDice.get(0).rollDice();
+        this.moveDice.get(1).rollDice();
+        return moveDice;
     }
 }
