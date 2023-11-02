@@ -9,13 +9,15 @@ import java.util.ArrayList;
 
 public class Checker implements Displayable {
 
-    AsciiArt asciiArt;
+
 
     public Checker(){
         this.asciiArt = new AsciiArt("src/model/checker.txt");
 
     }
 
+    // AsciiArt section
+    AsciiArt asciiArt;
     @Override
     public void renderArt() {
         try {
