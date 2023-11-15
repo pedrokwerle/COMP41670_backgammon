@@ -60,8 +60,11 @@ public class AsciiArt {
                 this.uniqueArt.add(row,new ArrayList<>());
                 col = 0;
                 for (char charc = artFile.readChar(); charc != '\n'; charc = artFile.readChar()) {
-                    this.uniqueArt.get(row).add(col,new PixelAscii(charc,ColorsAscii.WHITE));
-                    col++;
+                    if (charc != '\r') {
+                        this.uniqueArt.get(row).add(col, new PixelAscii(charc, ColorsAscii.WHITE));
+
+                        col++;
+                    }
                 }
                 row++;
             }
