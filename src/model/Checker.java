@@ -12,7 +12,7 @@ public class Checker implements Displayable {
 
 
     public Checker(ColorsAscii color){
-        this.asciiArt = new AsciiArt("src/model/checker.txt");
+        this.asciiArt = new AsciiArt("/resources/checker.txt");
         this.color = color;
     }
 

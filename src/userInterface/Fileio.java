@@ -1,9 +1,6 @@
 package userInterface;
 
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 
 public class Fileio {
     protected String filePath;
@@ -15,11 +12,13 @@ public class Fileio {
     }
 
     private void openReader() {
-        try {
-            this.reader = new BufferedReader(new FileReader(this.filePath));
-        } catch (IOException e) {
-            e.printStackTrace();
+        InputStream in = getClass().getResourceAsStream(this.filePath);
+        if (in == null) {
+            // this is how we load file within editor (eg eclipse)
+            in = getClass().getResourceAsStream(this.filePath);
         }
+        this.reader = new BufferedReader(new InputStreamReader(in));
+
     }
     private void closeReader() {
         try {

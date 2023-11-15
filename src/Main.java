@@ -20,7 +20,7 @@ public class Main {
 
         System.out.println(player1.getPlayerName()+player2.getPlayerName());
         Checker frame = new Checker(ColorsAscii.WHITE);
-        frame.getArt().setFileLocation("src/model/board_frame.txt");
+        frame.getArt().setFileLocation("/resources/board_frame.txt");
         //
 
         DisplayManager displayManager = new DisplayManager(30,100);
