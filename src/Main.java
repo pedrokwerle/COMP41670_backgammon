@@ -24,13 +24,13 @@ public class Main {
         //
 
         DisplayManager displayManager = new DisplayManager(30,100);
-        displayManager.addToCache(frame,0,0);
+        displayManager.addToCache(frame,0,0+2);
 
 
         ArrayList<Lane> lanes = new ArrayList<>();
         // top lanes left
         int xpos = 2;
-        int ypos = 2;
+        int ypos = 2+2;
         for(int laneNum = 0; laneNum<6; laneNum++){
             LaneDownward lane = new LaneDownward();
             lanes.add(lane);
@@ -40,7 +40,7 @@ public class Main {
 
         // top lanes rigth
         xpos = 2+6*LANE_SPACING+1;
-        ypos = 2;
+        ypos = 2+2;
         for(int laneNum = 0; laneNum<6; laneNum++){
             LaneDownward lane = new LaneDownward();
             lanes.add(lane);
@@ -50,7 +50,7 @@ public class Main {
 
         // bottom lanes left
         xpos = 2;
-        ypos = 22;
+        ypos = 22+2;
         for(int laneNum = 0; laneNum<6; laneNum++){
             LaneUpward lane = new LaneUpward();
             lanes.add(lane);
@@ -60,7 +60,7 @@ public class Main {
 
         // bottom lanes right
         xpos = 2+6*LANE_SPACING+1;
-        ypos = 22;
+        ypos = 22+2;
         for(int laneNum = 0; laneNum<6; laneNum++){
             LaneUpward lane = new LaneUpward();
             lanes.add(lane);
