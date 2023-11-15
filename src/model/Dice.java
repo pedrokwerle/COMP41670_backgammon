@@ -10,7 +10,7 @@ public class Dice implements Displayable {
     int value;
 
     public Dice(){
-        this.asciiArt = new AsciiArt("src/model/dice.txt");
+        this.asciiArt = new AsciiArt("/resources/dice.txt");
     }
 
     public int rollDice(){

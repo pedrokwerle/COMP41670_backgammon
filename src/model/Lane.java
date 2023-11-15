@@ -9,7 +9,7 @@ public abstract class Lane implements Displayable {
     ArrayList<Checker> checkers;
     public Lane(){
         this.checkers = new ArrayList<>();
-        this.asciiArt = new AsciiArt("src/model/empty_lane.txt");
+        this.asciiArt = new AsciiArt("/resources/empty_lane.txt");
     }
     int size(){
         return this.checkers.size();

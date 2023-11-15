@@ -12,7 +12,7 @@ public class LaneUpward extends Lane{
 
                 this.asciiArt.loadArt();
             } catch (Exception e) {
-                System.out.println("File read error");
+                System.out.println(e);
             }
         }
         else {

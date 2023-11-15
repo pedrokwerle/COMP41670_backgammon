@@ -25,7 +25,7 @@ public class Checker implements Displayable {
             this.asciiArt.clearComponents();
             this.asciiArt.loadArt();
         } catch (Exception e) {
-            System.out.println("File read error");
+            System.out.println(e);
         }
 
         int height = this.asciiArt.getUniqueArt().size();
