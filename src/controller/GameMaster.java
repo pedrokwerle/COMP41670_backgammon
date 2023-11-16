@@ -42,7 +42,7 @@ public class GameMaster {
                     if (i+die.get(j).getValue() >= 24) {
                         // can bear off ** need to add checker that all pieces are home corner**
                         move.add(i);
-                        move.add(i+die.get(j).getValue());
+                        move.add(29);
                         moves.add(move);
                     }
                     else if (lanes.get(i+die.get(j).getValue()).getColour() == player.getPlayerColour()){
@@ -73,14 +73,13 @@ public class GameMaster {
                 if (moves.get(i).get(0) < BackgammonTable.LANES_PER_ROW){
                     moves.get(i).set(0,BackgammonTable.TOTAL_LANES-1-moves.get(i).get(0));
                 }
+                else if (moves.get(i).get(0) >= BackgammonTable.LANES_PER_ROW){
+                    moves.get(i).set(0,moves.get(i).get(0)-12);
+                }
                 if (moves.get(i).get(1) < BackgammonTable.LANES_PER_ROW){
                     moves.get(i).set(1,BackgammonTable.TOTAL_LANES-1-moves.get(i).get(1));
                 }
-
-                if (moves.get(i).get(0) >= BackgammonTable.LANES_PER_ROW){
-                    moves.get(i).set(0,moves.get(i).get(0)-12);
-                }
-                if (moves.get(i).get(1) >= BackgammonTable.LANES_PER_ROW){
+                else if (moves.get(i).get(1) >= BackgammonTable.LANES_PER_ROW){
                     moves.get(i).set(1,moves.get(i).get(1)-12);
                 }
             }
