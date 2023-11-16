@@ -29,7 +29,7 @@ public class Main {
         displayManager.addToCache(board,0,2);
 
         displayManager.printDisplay();
-
+        GameMaster GM = new GameMaster();
         // Initialization complete
         Player playerTurn = player1;
         while(true){
@@ -38,6 +38,7 @@ public class Main {
             String input =  key.getString();
             input = input.toLowerCase();
             ArrayList<Dice> die;
+            ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
             if (Objects.equals(input, "quit")) System.exit(42);
             else if (Objects.equals(input, "roll")) {
                 die = playerTurn.rollMoves();
@@ -46,8 +47,15 @@ public class Main {
 
                 displayManager.printDisplay();
 
-                GameMaster GM = new GameMaster();
-                System.out.println(GM.listMoves(board, playerTurn, die));
+
+                moves = GM.listMoves(board, playerTurn, die);
+
+                System.out.println("Possible moves");
+                for (int i=0;i < moves.size(); i++){
+                    System.out.print((char)(moves.get(i).get(0)+65));
+                    System.out.print((char)(moves.get(i).get(1)+65));
+                    System.out.print("\n");
+                }
             }
 
 
