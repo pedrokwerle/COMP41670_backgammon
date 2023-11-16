@@ -5,7 +5,6 @@ import java.util.*;
 
 
 public class Main {
-    public static final int LANE_SPACING = 8;
     public static void main(String[] args) {
         demo();
     }
@@ -19,84 +18,15 @@ public class Main {
         Player player2 = new Player(Main.nextLine());
 
         System.out.println(player1.getPlayerName()+player2.getPlayerName());
-        Checker frame = new Checker(ColorsAscii.WHITE);
-        frame.getArt().setFileLocation("/resources/board_frame.txt");
+
         //
 
         DisplayManager displayManager = new DisplayManager(30,100);
-        displayManager.addToCache(frame,0,0+2);
 
+        BackgammonTable board = new BackgammonTable();
+        board.initializeBoard();
+        displayManager.addToCache(board,0,2);
 
-        ArrayList<Lane> lanes = new ArrayList<>();
-        // top lanes left
-        int xpos = 2;
-        int ypos = 2+2;
-        for(int laneNum = 0; laneNum<6; laneNum++){
-            LaneDownward lane = new LaneDownward();
-            lanes.add(lane);
-            displayManager.addToCache(lane,xpos,ypos);
-            xpos += LANE_SPACING;
-        }
-
-        // top lanes rigth
-        xpos = 2+6*LANE_SPACING+1;
-        ypos = 2+2;
-        for(int laneNum = 0; laneNum<6; laneNum++){
-            LaneDownward lane = new LaneDownward();
-            lanes.add(lane);
-            displayManager.addToCache(lane,xpos,ypos);
-            xpos += LANE_SPACING;
-        }
-
-        // bottom lanes left
-        xpos = 2;
-        ypos = 22+2;
-        for(int laneNum = 0; laneNum<6; laneNum++){
-            LaneUpward lane = new LaneUpward();
-            lanes.add(lane);
-            displayManager.addToCache(lane,xpos,ypos);
-            xpos += LANE_SPACING;
-        }
-
-        // bottom lanes right
-        xpos = 2+6*LANE_SPACING+1;
-        ypos = 22+2;
-        for(int laneNum = 0; laneNum<6; laneNum++){
-            LaneUpward lane = new LaneUpward();
-            lanes.add(lane);
-            displayManager.addToCache(lane,xpos,ypos);
-            xpos += LANE_SPACING;
-        }
-
-        for(int i = 0; i<2; i++){
-            lanes.get(11).addChecker(new Checker(ColorsAscii.WHITE));
-        }
-        for(int i = 0; i<2; i++){
-            lanes.get(23).addChecker(new Checker(ColorsAscii.RED));
-        }
-
-        ColorsAscii color = ColorsAscii.WHITE;
-        for(int j = 0; j<24; j += 6){
-            for(int i = 0; i<5; i++){
-                lanes.get(j).addChecker(new Checker(color));
-
-            }
-            if(Objects.equals(color,ColorsAscii.WHITE ) || (j== 6)){
-                color = ColorsAscii.RED;
-            }
-            else{
-                color = ColorsAscii.WHITE;
-            }
-
-        }
-        color = ColorsAscii.RED;
-        for(int j = 4; j<24; j += 12){
-            for(int i = 0; i<3; i++){
-                lanes.get(j).addChecker(new Checker(color));
-            }
-            color = ColorsAscii.WHITE;
-
-        }
         displayManager.printDisplay();
 
         // Initialization complete
@@ -106,16 +36,14 @@ public class Main {
             System.out.println(playerTurn.getPlayerName()+" please enter your command: ");
             String input =  key.getString();
             input = input.toLowerCase();
-            ArrayList<Dice> die = new ArrayList<>();
+            ArrayList<Dice> die;
             if (Objects.equals(input, "quit")) System.exit(42);
             else if (Objects.equals(input, "roll")) {
                 die = playerTurn.rollMoves();
                 displayManager.addToCache(die.get(0),25,11);
                 displayManager.addToCache(die.get(1),74,11);
             }
-            else {
 
-            }
 
 
 
