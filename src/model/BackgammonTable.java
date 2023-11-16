@@ -69,6 +69,10 @@ public class BackgammonTable implements Displayable {
         return this.lanes.get(laneNum);
     }
 
+    public ArrayList<Lane> getLanes(){
+        return this.lanes;
+    }
+
 
 
     // Ascii art section:

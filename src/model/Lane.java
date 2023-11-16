@@ -1,6 +1,7 @@
 package model;
 
 import userInterface.AsciiArt;
+import userInterface.ColorsAscii;
 import userInterface.Displayable;
 
 import java.util.ArrayList;
@@ -24,6 +25,13 @@ public abstract class Lane implements Displayable {
     public void addChecker(Checker checker){
         this.checkers.add(checker);
     }
+
+    public ColorsAscii getColour() {
+        if (size() != 0) return this.checkers.get(size()-1).color;
+        else return null;
+    }
+
+    public int getSize(){return size();}
 
 
     //AsciiArt
