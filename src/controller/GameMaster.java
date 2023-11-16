@@ -16,14 +16,14 @@ public class GameMaster {
         ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 
         // reordering the lanes for each colour to make finding the possible moves easier.
-        if (player.getPlayerColour() == ColorsAscii.WHITE){
+        if (player.getPlayerColour() == ColorsAscii.RED){
             for (int i = BackgammonTable.TOTAL_LANES-1; i >= BackgammonTable.LANES_PER_ROW; i--){
                 lanes.add(board.getLane(i));
             }
             for (int i = 0; i < BackgammonTable.LANES_PER_ROW; i++){
                 lanes.add(board.getLane(i));
             }
-        } else if (player.getPlayerColour() == ColorsAscii.RED) {
+        } else if (player.getPlayerColour() == ColorsAscii.WHITE) {
             for (int i = BackgammonTable.LANES_PER_ROW-1; i >= 0; i--){
                 lanes.add(board.getLane(i));
             }
@@ -45,19 +45,19 @@ public class GameMaster {
                         move.add(i+die.get(j).getValue());
                         moves.add(move);
                     }
-                    else if (board.getLane(i+die.get(j).getValue()).getColour() == player.getPlayerColour()){
+                    else if (lanes.get(i+die.get(j).getValue()).getColour() == player.getPlayerColour()){
                         //is a possible move, just adds to the lanes
                         move.add(i);
                         move.add(i+die.get(j).getValue());
                         moves.add(move);
                     }
-                    else if(board.getLane(i+die.get(j).getValue()).getSize() == 1){
+                    else if(lanes.get(i+die.get(j).getValue()).getSize() == 1){
                         // will kill the enemy piece and send it to the bar
                         move.add(i);
                         move.add(i+die.get(j).getValue());
                         moves.add(move);
                     }
-                    else if(board.getLane(i+die.get(j).getValue()).getSize() == 0) {
+                    else if(lanes.get(i+die.get(j).getValue()).getSize() == 0) {
                         //is a possible move, just adds to the lanes
                         move.add(i);
                         move.add(i+die.get(j).getValue());
@@ -69,7 +69,7 @@ public class GameMaster {
 
         // unshuffle the lane numbers
         for (int i = 0;i < moves.size();i++){
-            if (player.getPlayerColour() == ColorsAscii.WHITE){
+            if (player.getPlayerColour() == ColorsAscii.RED){
                 if (moves.get(i).get(0) < BackgammonTable.LANES_PER_ROW){
                     moves.get(i).set(0,BackgammonTable.TOTAL_LANES-1-moves.get(i).get(0));
                 }
@@ -84,7 +84,7 @@ public class GameMaster {
                     moves.get(i).set(1,moves.get(i).get(1)-12);
                 }
             }
-            else if (player.getPlayerColour() == ColorsAscii.RED){
+            else if (player.getPlayerColour() == ColorsAscii.WHITE){
                 if (moves.get(i).get(0) < BackgammonTable.LANES_PER_ROW){
                     moves.get(i).set(0,BackgammonTable.LANES_PER_ROW-1-moves.get(i).get(0));
                 }
