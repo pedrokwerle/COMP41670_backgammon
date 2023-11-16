@@ -16,7 +16,7 @@ public abstract class Lane implements Displayable {
         return this.checkers.size();
     }
 
-    Checker removeChecker(){
+    public Checker removeChecker(){
         Checker checker;
         checker = this.checkers.get(this.checkers.size()-1);
         this.checkers.remove(this.checkers.size()-1);
