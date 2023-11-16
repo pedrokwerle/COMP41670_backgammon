@@ -11,8 +11,9 @@ public class GameMaster {
         this.moveLog = new ArrayList<>();
     }
 
-    public void listMoves(BackgammonTable board,Player player, ArrayList<Dice> die){
+    public ArrayList<ArrayList<Integer>> listMoves(BackgammonTable board,Player player, ArrayList<Dice> die){
         ArrayList<Lane> lanes = null;
+        ArrayList<ArrayList<Integer>> moves = null;
 
         // reordering the lanes for each colour to make finding the possible moves easier.
         if (player.getPlayerColour() == ColorsAscii.WHITE){
@@ -36,21 +37,62 @@ public class GameMaster {
             if (lanes.get(i).getColour() == player.getPlayerColour()){
                 // looping through each of the dice the player rolled
                 for (int j = 0;j < die.size();j++){
+                    ArrayList<Integer> move = null;
                     // check if moving from this lane to that with the dice is valid
                     if (board.getLane(i+die.get(j).getValue()).getColour() == player.getPlayerColour()){
                         //is a possible move, just adds to the lanes
+                        move.add(i);
+                        move.add(i+die.get(j).getValue());
+                        moves.add(move);
                     }
                     else if(board.getLane(i+die.get(j).getValue()).getSize() == 1){
                         // will kill the enemy piece and send it to the bar
+                        move.add(i);
+                        move.add(i+die.get(j).getValue());
+                        moves.add(move);
                     }
                     else if(board.getLane(i+die.get(j).getValue()).getSize() == 0) {
                         //is a possible move, just adds to the lanes
+                        move.add(i);
+                        move.add(i+die.get(j).getValue());
+                        moves.add(move);
                     }
                     else if (i+die.get(j).getValue() == 24) {
                         // can bear off ** need to add checker that all pieces are home corner**
+                        move.add(i);
+                        move.add(i+die.get(j).getValue());
+                        moves.add(move);
                     }
                 }
             }
         }
+
+        // unshuffle the lane numbers
+        for (int i = 0;i < moves.size();i++){
+            if (player.getPlayerColour() == ColorsAscii.WHITE){
+                if (moves.get(i).get(1) < BackgammonTable.LANES_PER_ROW){
+                    moves.get(i).set(i,BackgammonTable.TOTAL_LANES-1-moves.get(i).get(1));
+                }
+                if (moves.get(i).get(2) < BackgammonTable.LANES_PER_ROW){
+                    moves.get(i).set(i,BackgammonTable.TOTAL_LANES-1-moves.get(i).get(2));
+                }
+
+                if (moves.get(i).get(1) >= BackgammonTable.LANES_PER_ROW){
+                    moves.get(i).set(i,moves.get(i).get(1)-12);
+                }
+                if (moves.get(i).get(2) >= BackgammonTable.LANES_PER_ROW){
+                    moves.get(i).set(i,moves.get(i).get(2)-12);
+                }
+            }
+            else if (player.getPlayerColour() == ColorsAscii.RED){
+                if (moves.get(i).get(1) < BackgammonTable.LANES_PER_ROW){
+                    moves.get(i).set(i,BackgammonTable.LANES_PER_ROW-1-moves.get(i).get(1));
+                }
+                if (moves.get(i).get(2) < BackgammonTable.LANES_PER_ROW){
+                    moves.get(i).set(i,BackgammonTable.LANES_PER_ROW-1-moves.get(i).get(2));
+                }
+            }
+        }
+        return moves;
     }
 }
