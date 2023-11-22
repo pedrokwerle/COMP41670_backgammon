@@ -145,7 +145,7 @@ public class GameMaster {
         System.out.println(playerTurn.getPlayerName()+" goes first!");
         nextPlayerTurn = playerTurn;
 
-        this.displayManager = new DisplayManager(40,150);
+        this.displayManager = new DisplayManager(36,150);
 
         table = new BackgammonTable();
         table.initializeBoard();
@@ -235,7 +235,7 @@ public class GameMaster {
                     playerTurn.setHasRolled(true);
                 }
                 else {
-                    displayManager.addToCache(new AsciiString("You have already rolled: "+playerTurn.getDie().get(0) +" and "+ playerTurn.getDie().get(1)),0,BackgammonTable.BOTTOM_OFF_FRAME);
+                    displayManager.addToCache(new AsciiString("You have already rolled: "+playerTurn.getDie().get(0).getValue() +" and "+ playerTurn.getDie().get(1).getValue()),0,BackgammonTable.BOTTOM_OFF_FRAME);
                     printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
                 }
 
