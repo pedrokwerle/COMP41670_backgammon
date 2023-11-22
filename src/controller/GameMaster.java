@@ -217,14 +217,7 @@ public class GameMaster {
                 nextPlayerTurn = playerTurn;
                 break;
             case MOVE:
-                if (Objects.equals(playerTurn, player1)) {
-                    nextPlayerTurn = player2;
-                    player1.setHasRolled(false);
-                }
-                else {
-                    player2.setHasRolled(false);
-                    nextPlayerTurn = player1;
-                }
+                moveCommand();
                 break;
             case PIP:
                 pipCommand();
@@ -241,6 +234,20 @@ public class GameMaster {
                 break;
             default:
         }
+    }
+
+    public void moveCommand(){
+        int moveIndex = userInput.getBytes()[0]-97;
+        ArrayList<ArrayList<Integer>> moves = listMoves();
+        ArrayList<Integer> movePair = moves.get(moveIndex);
+        int diceSize = Math.abs(movePair.get(0)-movePair.get(1));
+        for (int i = 0;i < playerTurn.getDie().size(); i++) {
+            if (playerTurn.getDie().get(i).getValue() == diceSize) {
+                playerTurn.getDie().remove(i);
+                break;
+            }
+        }
+        dealer.moveAChecker(movePair.get(0), movePair.get(1));
     }
 
     private void printMoves() {
