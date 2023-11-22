@@ -145,7 +145,7 @@ public class GameMaster {
         System.out.println(playerTurn.getPlayerName()+" goes first!");
         nextPlayerTurn = playerTurn;
 
-        this.displayManager = new DisplayManager(40,100);
+        this.displayManager = new DisplayManager(40,150);
 
         table = new BackgammonTable();
         table.initializeBoard();
@@ -325,13 +325,15 @@ public class GameMaster {
     }
 
     public void hintCommand(){
-        System.out.println("Available commands: ");
+        displayManager.addToCache(new AsciiString("Available commands"), 0, BackgammonTable.BOTTOM_OFF_FRAME);
+        int i = 0;
         for (CommandType command : CommandType.values()){
             if (Objects.equals(command,CommandType.INVALID)){
 
             }
             else {
-                System.out.println("--   "+command.getDescription());
+                displayManager.addToCache(new AsciiString("--   "+command.getDescription()), 0, BackgammonTable.BOTTOM_OFF_FRAME+i+1);
+                i++;
             }
         }
     }
