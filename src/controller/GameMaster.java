@@ -1,5 +1,6 @@
 package controller;
 import model.*;
+import userInterface.AsciiString;
 import userInterface.ColorsAscii;
 import userInterface.DisplayManager;
 import userInterface.Keyboard;
@@ -82,7 +83,7 @@ public class GameMaster {
         }
 
         // unshuffle the lane numbers
-        for (int i = 0;i < moves.size();i++){
+        /*for (int i = 0;i < moves.size();i++){
             if (playerTurn.getPlayerColour() == ColorsAscii.RED){
                 if (moves.get(i).get(0) < BackgammonTable.LANES_PER_ROW){
                     moves.get(i).set(0,BackgammonTable.TOTAL_LANES-1-moves.get(i).get(0));
@@ -105,7 +106,7 @@ public class GameMaster {
                     moves.get(i).set(1,BackgammonTable.LANES_PER_ROW-1-moves.get(i).get(1));
                 }
             }
-        }
+        }*/
         return moves;
     }
 
@@ -144,15 +145,15 @@ public class GameMaster {
         System.out.println(playerTurn.getPlayerName()+" goes first!");
         nextPlayerTurn = playerTurn;
 
-        this.displayManager = new DisplayManager(30,100);
+        this.displayManager = new DisplayManager(40,100);
 
         table = new BackgammonTable();
         table.initializeBoard();
+
         displayManager.addToCache(playerTurn.getDie().get(0),22,14);
         displayManager.addToCache(playerTurn.getDie().get(1),72,14);
-        displayManager.addToCache(table,0,2);
 
-        displayManager.printDisplay();
+        printMoves(BackgammonTable.BOTTOM_OFF_FRAME);
         this.dealer = new Dealer(table);
         // Initialization complete
 
@@ -160,16 +161,35 @@ public class GameMaster {
     }
     public void gameLoop(){
         while(true){
+            displayManager.addToCache(0,table, 0, 0);
+            setPlayerFrame();
+            displayManager.printDisplay();
+            displayManager.clearCache();
+
             takeInput();
             interpretCommand();
             executeCommand();
 
-            displayManager.printDisplay();
+
             playerTurn = nextPlayerTurn;
         }
     }
 
-    // Command section
+    public void setPlayerFrame(){
+        if (Objects.equals(playerTurn.getPlayerColour(), ColorsAscii.RED)){
+            Checker frame = new Checker(ColorsAscii.RED); // this color doesn't matter btw
+            frame.getArt().setFileLocation("/resources/board_frame_red.txt");
+            displayManager.addToCache(0,frame, 0, 0);
+        }
+        else {
+            Checker frame = new Checker(ColorsAscii.WHITE); // this color doesn't matter btw
+            frame.getArt().setFileLocation("/resources/board_frame_white.txt");
+            displayManager.addToCache(0,frame, 0, 0);
+        }
+    }
+
+
+    // **Command section**
     public void takeInput(){
         System.out.println(playerTurn.getPlayerName()+" please enter your command: ");
         userInput = key.getString();
@@ -181,7 +201,7 @@ public class GameMaster {
         else if (Objects.equals(userInput.toLowerCase(), "roll")){
             commandType = CommandType.ROLL;
         }
-        else if (userInput.matches("[a-zA-Z]")){
+        else if (userInput.toLowerCase().matches("[a-"+ (char)('a'+(listMoves().size()-1)) + "]")){
             commandType = CommandType.MOVE;
         }
         else if (Objects.equals(userInput.toLowerCase(), "hint") || Objects.equals(userInput.toLowerCase(), "help")){
@@ -206,12 +226,12 @@ public class GameMaster {
                     displayManager.addToCache(playerTurn.getDie().get(0),22,14);
                     displayManager.addToCache(playerTurn.getDie().get(1),72,14);
 
-                    printMoves();
+                    printMoves(BackgammonTable.BOTTOM_OFF_FRAME);
                     playerTurn.setHasRolled(true);
                 }
                 else {
-                    System.out.println("You have already rolled.");
-                    printMoves();
+                    displayManager.addToCache(new AsciiString("You have already rolled: "+playerTurn.getDie().get(0) +" and "+ playerTurn.getDie().get(1)),0,BackgammonTable.BOTTOM_OFF_FRAME);
+                    printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
                 }
 
                 nextPlayerTurn = playerTurn;
@@ -234,7 +254,6 @@ public class GameMaster {
                 hintCommand();
                 nextPlayerTurn = playerTurn;
                 break;
-
             case INVALID:
                 System.out.println("Invalid command. Please type 'help' or 'hint' to see the list of commands.");
                 nextPlayerTurn = playerTurn;
@@ -243,16 +262,20 @@ public class GameMaster {
         }
     }
 
-    private void printMoves() {
+    private void printMoves(int yPos) {
         ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
         moves = listMoves();
 
-        System.out.println("Possible moves");
+        displayManager.addToCache(new AsciiString("Possible moves"), 0, yPos);
+        String string = new String();
         for (int i=0;i < moves.size(); i++){
-            System.out.print((char)(moves.get(i).get(0)+65));
-            System.out.print((char)(moves.get(i).get(1)+65));
-            System.out.print("\n");
+            string = string + (char)(i+65) + ") ";
+            string = string + (24-moves.get(i).get(0));
+            string = string + " -> ";
+            string = string + (24-moves.get(i).get(1));
+            string = string + "\n";
         }
+        displayManager.addToCache(new AsciiString(string), 0, yPos+1);
     }
 
     public void pipCommand(){
