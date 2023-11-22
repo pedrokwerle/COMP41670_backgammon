@@ -260,7 +260,7 @@ public class GameMaster {
                 nextPlayerTurn = playerTurn;
                 break;
             case INVALID:
-                System.out.println("Invalid command. Please type 'help' or 'hint' to see the list of commands.");
+                displayManager.addToCache(new AsciiString("Invalid command. Please type 'help' or 'hint' to see the list of commands."), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
                 nextPlayerTurn = playerTurn;
                 break;
             default:
