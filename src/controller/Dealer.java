@@ -12,7 +12,7 @@ public class Dealer {
          this.table = table;
      }
 
-     public void moveChecker(int fromLaneNum, int toLaneNum){
+     public void moveAChecker(int fromLaneNum, int toLaneNum){
          // lane numbering goes A->0, B->1,...Y->23
          Checker checker = table.getLanes().get(fromLaneNum).removeChecker();
          table.getLanes().get(toLaneNum).addChecker(checker);

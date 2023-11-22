@@ -1,6 +1,7 @@
 package model;
 
 import userInterface.AsciiArt;
+import userInterface.AsciiString;
 
 public class LaneDownward extends Lane{
 
@@ -17,12 +18,19 @@ public class LaneDownward extends Lane{
         }
         else {
             int xPos = 0;
-            int yPos = 0;
+            int yPos = 1;
             for (Checker checker : checkers) {
-                this.asciiArt.addComponent(checker, xPos, yPos);
-                xPos += 0;
-                yPos += 2;
-                checker.renderArt();
+                if(yPos > 10){
+                    AsciiString string = new AsciiString(" +"+(this.checkers.size()-5));
+                    this.asciiArt.addComponent(string,xPos,yPos);
+                    string.renderArt();
+                }
+                else {
+                    this.asciiArt.addComponent(checker, xPos, yPos);
+                    xPos += 0;
+                    yPos += 2;
+                    checker.renderArt();
+                }
             }
         }
     }
