@@ -13,9 +13,8 @@ public class Dice implements Displayable {
         this.asciiArt = new AsciiArt("/resources/dice.txt");
     }
 
-    public int rollDice(){
+    public void rollDice(){
         value =  RandomGenerator.getDefault().nextInt(NUMBER_OF_SIDES)+1;
-        return value;
     }
 
     public int getValue(){

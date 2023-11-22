@@ -6,7 +6,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Player {
-    ArrayList<Dice> moveDice = new ArrayList<>();
+    ArrayList<Dice> moveDie = new ArrayList<>();
     private String playerName;
 
     private ColorsAscii playerColour;
@@ -14,8 +14,8 @@ public class Player {
     public Player(String playerName, ColorsAscii playerColour){
         this.playerName = playerName;
         this.playerColour = playerColour;
-        moveDice.add(new Dice());
-        moveDice.add(new Dice());
+        moveDie.add(new Dice());
+        moveDie.add(new Dice());
     }
 
     public void setPlayerName(String playerName){
@@ -29,12 +29,15 @@ public class Player {
     public ColorsAscii getPlayerColour(){return  this.playerColour;}
 
     public ArrayList<Dice> rollMoves(){
-        this.moveDice.get(0).rollDice();
-        this.moveDice.get(1).rollDice();
-        return moveDice;
+        this.moveDie.get(0).rollDice();
+        this.moveDie.get(1).rollDice();
+        return moveDie;
     }
 
     public ArrayList<Dice> getDie(){
-        return moveDice;
+        return moveDie;
+    }
+    public void setDie(ArrayList<Dice> rolls){
+        this.moveDie = rolls;
     }
 }
