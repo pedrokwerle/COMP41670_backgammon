@@ -10,6 +10,7 @@ public class Player {
     private String playerName;
 
     private ColorsAscii playerColour;
+    private boolean hasRolled;
     private int pipScore;
 
     public Player(String playerName, ColorsAscii playerColour){
@@ -48,5 +49,13 @@ public class Player {
 
     public void setPipScore(int pipScore) {
         this.pipScore = pipScore;
+    }
+
+    public boolean getHasRolled(){
+        return this.hasRolled;
+    }
+
+    public void setHasRolled(boolean hasRolled){
+        this.hasRolled = hasRolled;
     }
 }
