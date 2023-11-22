@@ -13,6 +13,7 @@ public class BackgammonTable implements Displayable {
     public static final int TOTAL_LANES = 24;
     public static final int LANE_SPACING = 8;
     public static final int BOTTOM_ROW_POSITION = 24;
+    public static final int BOTTOM_OFF_FRAME = 28; // first blank line under the frame
 
 
 
@@ -82,12 +83,6 @@ public class BackgammonTable implements Displayable {
     @Override
     public void renderArt() {
         this.asciiArt.clearComponents();
-
-        Checker frame = new Checker(ColorsAscii.WHITE);
-        frame.getArt().setFileLocation("/resources/board_frame.txt");
-        this.asciiArt.addComponent(frame,0,0);
-        frame.renderArt();
-
 
         int xpos = 2;
         int ypos = 2;

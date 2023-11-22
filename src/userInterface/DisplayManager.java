@@ -14,6 +14,11 @@ public class DisplayManager {
         object.getArt().adjustyPos(yPos);
         this.renderCache.add(object);
     }
+    public void addToCache(int cachePosition, Displayable object, int xPos, int yPos){
+        object.getArt().adjustxPos(xPos);
+        object.getArt().adjustyPos(yPos);
+        this.renderCache.add(cachePosition, object);
+    }
     public void clearCache(){
         this.renderCache = new ArrayList<>();
     }
