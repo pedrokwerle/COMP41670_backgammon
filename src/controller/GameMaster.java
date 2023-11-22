@@ -195,13 +195,18 @@ public class GameMaster {
         userInput = key.getString();
     }
     public void interpretCommand(){
+
+        int numMoves = listMoves().size();
+        if(numMoves == 0){
+            numMoves = 1; // might be dangerous
+        }
         if (Objects.equals(userInput.toLowerCase(), "quit")) {
             commandType = CommandType.QUIT;
         }
         else if (Objects.equals(userInput.toLowerCase(), "roll")){
             commandType = CommandType.ROLL;
         }
-        else if (userInput.toLowerCase().matches("[a-"+ (char)('a'+(listMoves().size()-1)) + "]")){
+        else if (userInput.toLowerCase().matches("[a-"+ (char)('a'+numMoves-1) + "]")){
             commandType = CommandType.MOVE;
         }
         else if (Objects.equals(userInput.toLowerCase(), "hint") || Objects.equals(userInput.toLowerCase(), "help")){
@@ -314,8 +319,8 @@ public class GameMaster {
             player2.setPipScore(redPip);
         }
 
-        System.out.println(player1.getPlayerName() + "'s pip score is: " + player1.getPipScore());
-        System.out.println(player2.getPlayerName() + "'s pip score is: " + player2.getPipScore());
+        displayManager.addToCache(new AsciiString(player1.getPlayerName() + "'s pip score is: " + player1.getPipScore()), 0, BackgammonTable.BOTTOM_OFF_FRAME);
+        displayManager.addToCache(new AsciiString(player1.getPlayerName() + "'s pip score is: " + player2.getPipScore()), 0, BackgammonTable.BOTTOM_OFF_FRAME+1);
 
     }
 
