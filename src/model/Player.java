@@ -33,4 +33,8 @@ public class Player {
         this.moveDice.get(1).rollDice();
         return moveDice;
     }
+
+    public ArrayList<Dice> getDie(){
+        return moveDice;
+    }
 }

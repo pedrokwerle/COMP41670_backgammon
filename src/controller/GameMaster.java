@@ -13,12 +13,16 @@ public class GameMaster {
     Player player1;
     Player player2;
     Player playerTurn;
+    Player nextPlayerTurn;
     DisplayManager displayManager;
     Dealer dealer;
     BackgammonTable table;
+    Keyboard key;
+    String userInput;
+    CommandType commandType;
 
     public GameMaster() {
-
+        this.key = new Keyboard();
     }
 
     public ArrayList<ArrayList<Integer>> listMoves(BackgammonTable board, Player player, ArrayList<Dice> die){
@@ -105,10 +109,6 @@ public class GameMaster {
         return moves;
     }
 
-    public void interpretInput(){
-
-    }
-
     public void startGame(){
         Keyboard key = new Keyboard();
         System.out.println("Please input Player 1's name: ");
@@ -152,22 +152,52 @@ public class GameMaster {
     }
     public void gameLoop(){
         while(true){
-            Keyboard key = new Keyboard();
-            System.out.println(playerTurn.getPlayerName()+" please enter your command: ");
-            String input =  key.getString();
-            input = input.toLowerCase();
-            ArrayList<Dice> die;
-            ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
-            if (Objects.equals(input, "quit")) System.exit(42);
-            else if (Objects.equals(input, "roll")) {
-                dealer.moveAChecker(12,11);
-                die = playerTurn.rollMoves();
+            takeInput();
+            interpretCommand();
+            executeCommand();
+
+            playerTurn = nextPlayerTurn;
+        }
+    }
+
+    // Command section
+    public void takeInput(){
+        System.out.println(playerTurn.getPlayerName()+" please enter your command: ");
+        userInput = key.getString();
+    }
+    public void interpretCommand(){
+        if (Objects.equals(userInput.toLowerCase(), "quit")) {
+            commandType = CommandType.QUIT;
+        }
+        else if (Objects.equals(userInput.toLowerCase(), "roll")){
+            commandType = CommandType.ROLL;
+        }
+        else if (userInput.matches("[a-zA-Z]")){
+            commandType = CommandType.MOVE;
+        }
+        else if (Objects.equals(userInput.toLowerCase(), "hint") || Objects.equals(userInput.toLowerCase(), "help")){
+            commandType = CommandType.HINT;
+        }
+        else if (Objects.equals(userInput.toLowerCase(), "pip")){
+            commandType = CommandType.PIP;
+        }
+        else if(Objects.equals(userInput.toLowerCase(), "test")){
+            commandType = CommandType.TEST;
+        }
+        else commandType = CommandType.INVALID;
+    }
+
+    public void executeCommand(){
+        switch (commandType){
+            case QUIT:
+                System.exit(42);
+            case ROLL:
+                playerTurn.rollMoves();
+                ArrayList<Dice> die = playerTurn.getDie();
                 displayManager.addToCache(die.get(0),25,11);
                 displayManager.addToCache(die.get(1),74,11);
 
-                displayManager.printDisplay();
-
-
+                ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
                 moves = listMoves(table, playerTurn, die);
 
                 System.out.println("Possible moves");
@@ -176,21 +206,14 @@ public class GameMaster {
                     System.out.print((char)(moves.get(i).get(1)+65));
                     System.out.print("\n");
                 }
-            }
-
-
-
-
-
-            if(Objects.equals(playerTurn, player1)){
-                playerTurn = player2;
-            }
-            else{
-                playerTurn = player1;
-            }
-
-
-
+                nextPlayerTurn = playerTurn;
+                break;
+            case MOVE:
+                if (Objects.equals(playerTurn, player1))
+                    nextPlayerTurn = player2;
+                else nextPlayerTurn = player1;
+                break;
+            default:
         }
     }
 
