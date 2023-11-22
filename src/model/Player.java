@@ -16,8 +16,6 @@ public class Player {
     public Player(String playerName, ColorsAscii playerColour){
         this.playerName = playerName;
         this.playerColour = playerColour;
-        moveDie.add(new Dice());
-        moveDie.add(new Dice());
     }
 
     public void setPlayerName(String playerName){
@@ -31,8 +29,18 @@ public class Player {
     public ColorsAscii getPlayerColour(){return  this.playerColour;}
 
     public ArrayList<Dice> rollMoves(){
+        moveDie.clear();
+        moveDie.add(new Dice());
+        moveDie.add(new Dice());
         this.moveDie.get(0).rollDice();
         this.moveDie.get(1).rollDice();
+
+        if (this.moveDie.get(0).value == this.moveDie.get(1).value){
+            this.moveDie.add(new Dice());
+            this.moveDie.get(2).setValue(this.moveDie.get(0).value);
+            this.moveDie.add(new Dice());
+            this.moveDie.get(3).setValue(this.moveDie.get(0).value);
+        }
         return moveDie;
     }
 

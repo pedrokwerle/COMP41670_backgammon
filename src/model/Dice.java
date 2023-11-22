@@ -21,6 +21,8 @@ public class Dice implements Displayable {
         return this.value;
     }
 
+    public void setValue(int value) {this.value = value;}
+
 
 
     //AsciiArt section
