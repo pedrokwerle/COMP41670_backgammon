@@ -209,6 +209,10 @@ public class GameMaster {
                     printMoves();
                     playerTurn.setHasRolled(true);
                 }
+                else {
+                    System.out.println("You have already rolled.");
+                    printMoves();
+                }
 
                 nextPlayerTurn = playerTurn;
                 break;
@@ -228,6 +232,11 @@ public class GameMaster {
                 break;
             case HINT:
                 hintCommand();
+                nextPlayerTurn = playerTurn;
+                break;
+
+            case INVALID:
+                System.out.println("Invalid command. Please type 'help' or 'hint' to see the list of commands.");
                 nextPlayerTurn = playerTurn;
                 break;
             default:
