@@ -117,7 +117,26 @@ public class GameMaster {
         System.out.println("Please input Player 2's name: ");
         this.player2 = new Player(key.getString(), ColorsAscii.RED);
 
-        System.out.println(player1.getPlayerName()+player2.getPlayerName());
+        System.out.println("Player 1: "+player1.getPlayerName()+", Player 2: "+player2.getPlayerName());
+
+        boolean hasPlayerOrder = false;
+        Dice p1Roll = new Dice();
+        Dice p2Roll = new Dice();
+
+        while (!hasPlayerOrder){
+            p1Roll.rollDice();
+            p2Roll.rollDice();
+            if (p1Roll.getValue() > p2Roll.getValue()) {
+                this.playerTurn = player1;
+                hasPlayerOrder = true;
+            }
+            else if (p2Roll.getValue() > p1Roll.getValue()){
+                this.playerTurn = player2;
+                hasPlayerOrder = true;
+            }
+        }
+        System.out.println(player1.getPlayerName()+" has rolled a "+p1Roll.getValue()+" and "+player2.getPlayerName()+ " has rolled a "+p2Roll.getValue());
+        System.out.println(playerTurn.getPlayerName()+" goes first!");
 
         this.displayManager = new DisplayManager(30,100);
 
@@ -129,7 +148,6 @@ public class GameMaster {
         this.dealer = new Dealer(table);
         // Initialization complete
 
-        this.playerTurn = player1;
         this.gameLoop();
     }
     public void gameLoop(){
