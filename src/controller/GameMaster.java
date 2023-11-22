@@ -137,6 +137,7 @@ public class GameMaster {
         }
         System.out.println(player1.getPlayerName()+" has rolled a "+p1Roll.getValue()+" and "+player2.getPlayerName()+ " has rolled a "+p2Roll.getValue());
         System.out.println(playerTurn.getPlayerName()+" goes first!");
+        nextPlayerTurn = playerTurn;
 
         this.displayManager = new DisplayManager(30,100);
 
@@ -217,6 +218,11 @@ public class GameMaster {
             case PIP:
                 pipCommand();
                 nextPlayerTurn = playerTurn;
+                break;
+            case HINT:
+                hintCommand();
+                nextPlayerTurn = playerTurn;
+                break;
             default:
         }
     }
@@ -260,8 +266,18 @@ public class GameMaster {
         System.out.println(player1.getPlayerName() + "'s pip score is: " + player1.getPipScore());
         System.out.println(player2.getPlayerName() + "'s pip score is: " + player2.getPipScore());
 
+    }
 
+    public void hintCommand(){
+        System.out.println("Available commands: ");
+        for (CommandType command : CommandType.values()){
+            if (Objects.equals(command,CommandType.INVALID)){
 
+            }
+            else {
+                System.out.println("--   "+command.getDescription());
+            }
+        }
     }
 
 }
