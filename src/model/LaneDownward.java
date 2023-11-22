@@ -18,7 +18,7 @@ public class LaneDownward extends Lane{
         }
         else {
             int xPos = 0;
-            int yPos = 1;
+            int yPos = 0;
             for (Checker checker : checkers) {
                 if(yPos > 10){
                     AsciiString string = new AsciiString(" +"+(this.checkers.size()-5));
