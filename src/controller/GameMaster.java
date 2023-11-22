@@ -216,26 +216,50 @@ public class GameMaster {
                 break;
             case PIP:
                 pipCommand();
+                nextPlayerTurn = playerTurn;
             default:
         }
     }
 
     public void pipCommand(){
         // reordering the lanes for each colour to make finding the possible moves easier.
-        ArrayList<Lane> lanesRed = new ArrayList<>();
-        ArrayList<Lane> lanesBlack = new ArrayList<>();
+        ArrayList<Lane> lanes = new ArrayList<>();
+
         for (int i = BackgammonTable.TOTAL_LANES-1; i >= BackgammonTable.LANES_PER_ROW; i--){
-            lanesRed.add(table.getLane(i));
+            lanes.add(table.getLane(i));
         }
         for (int i = 0; i < BackgammonTable.LANES_PER_ROW; i++){
-            lanesRed.add(table.getLane(i));
+            lanes.add(table.getLane(i));
         }
-        for (int i = BackgammonTable.LANES_PER_ROW-1; i >= 0; i--){
-            lanesBlack.add(table.getLane(i));
+
+        int redPip = 0;
+        int whitePip = 0;
+
+        int laneNumRed = 0;
+        int laneNumWhite = 23;
+        for (Lane lane : lanes){
+            if (Objects.equals(lane.getColour(), ColorsAscii.RED)){
+                redPip += lane.getSize()*(24-laneNumRed);
+            }
+            else if (Objects.equals(lane.getColour(), ColorsAscii.WHITE)){
+                whitePip += lane.getSize()*(24-laneNumWhite);
+            }
+            laneNumRed += 1;
+            laneNumWhite -= 1;
         }
-        for (int i = BackgammonTable.LANES_PER_ROW; i < BackgammonTable.TOTAL_LANES; i++){
-            lanesBlack.add(table.getLane(i));
+
+        if ( Objects.equals(player1.getPlayerColour(),ColorsAscii.RED)){
+            player1.setPipScore(redPip);
+            player2.setPipScore(whitePip);
         }
+        else {
+            player1.setPipScore(whitePip);
+            player2.setPipScore(redPip);
+        }
+
+        System.out.println(player1.getPlayerName() + "'s pip score is: " + player1.getPipScore());
+        System.out.println(player2.getPlayerName() + "'s pip score is: " + player2.getPipScore());
+
 
 
     }

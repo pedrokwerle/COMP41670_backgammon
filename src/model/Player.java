@@ -10,6 +10,7 @@ public class Player {
     private String playerName;
 
     private ColorsAscii playerColour;
+    private int pipScore;
 
     public Player(String playerName, ColorsAscii playerColour){
         this.playerName = playerName;
@@ -39,5 +40,13 @@ public class Player {
     }
     public void setDie(ArrayList<Dice> rolls){
         this.moveDie = rolls;
+    }
+
+    public int getPipScore() {
+        return pipScore;
+    }
+
+    public void setPipScore(int pipScore) {
+        this.pipScore = pipScore;
     }
 }

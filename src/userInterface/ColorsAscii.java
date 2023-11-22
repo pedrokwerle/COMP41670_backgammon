@@ -6,7 +6,8 @@ public enum ColorsAscii {
     RED((char)27 +"[31m"),
     GREEN((char)27 +"[32m"),
     YELLOW((char)27 +"[93m"),
-    WHITE((char)27 +"[37m");
+    WHITE((char)27 +"[37m"),
+    NOCOLOR((char)27 +"[37m" );
     private final String code;
     public String toCode(){
         return this.code;

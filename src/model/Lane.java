@@ -28,7 +28,7 @@ public abstract class Lane implements Displayable {
 
     public ColorsAscii getColour() {
         if (size() != 0) return this.checkers.get(size()-1).color;
-        else return null;
+        else return ColorsAscii.NOCOLOR;
     }
 
     public int getSize(){return size();}
