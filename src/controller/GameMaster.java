@@ -1,17 +1,27 @@
 package controller;
 import model.*;
 import userInterface.ColorsAscii;
+import userInterface.DisplayManager;
+import userInterface.Keyboard;
 
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GameMaster {
     ArrayList<String> moveLog;
-    public GameMaster(){
-        this.moveLog = new ArrayList<>();
+    Player player1;
+    Player player2;
+    Player playerTurn;
+    DisplayManager displayManager;
+    Dealer dealer;
+    BackgammonTable table;
+
+    public GameMaster() {
+
     }
 
-    public ArrayList<ArrayList<Integer>> listMoves(BackgammonTable board,Player player, ArrayList<Dice> die){
+    public ArrayList<ArrayList<Integer>> listMoves(BackgammonTable board, Player player, ArrayList<Dice> die){
         ArrayList<Lane> lanes = new ArrayList<>();
         ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 
@@ -94,4 +104,76 @@ public class GameMaster {
         }
         return moves;
     }
+
+    public void interpretInput(){
+
+    }
+
+    public void startGame(){
+        Keyboard key = new Keyboard();
+        System.out.println("Please input Player 1's name: ");
+        this.player1 = new Player(key.getString(), ColorsAscii.WHITE);
+
+        System.out.println("Please input Player 2's name: ");
+        this.player2 = new Player(key.getString(), ColorsAscii.RED);
+
+        System.out.println(player1.getPlayerName()+player2.getPlayerName());
+
+        this.displayManager = new DisplayManager(30,100);
+
+        table = new BackgammonTable();
+        table.initializeBoard();
+        displayManager.addToCache(table,0,2);
+
+        displayManager.printDisplay();
+        this.dealer = new Dealer(table);
+        // Initialization complete
+
+        this.playerTurn = player1;
+        this.gameLoop();
+    }
+    public void gameLoop(){
+        while(true){
+            Keyboard key = new Keyboard();
+            System.out.println(playerTurn.getPlayerName()+" please enter your command: ");
+            String input =  key.getString();
+            input = input.toLowerCase();
+            ArrayList<Dice> die;
+            ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
+            if (Objects.equals(input, "quit")) System.exit(42);
+            else if (Objects.equals(input, "roll")) {
+                dealer.moveAChecker(12,11);
+                die = playerTurn.rollMoves();
+                displayManager.addToCache(die.get(0),25,11);
+                displayManager.addToCache(die.get(1),74,11);
+
+                displayManager.printDisplay();
+
+
+                moves = listMoves(table, playerTurn, die);
+
+                System.out.println("Possible moves");
+                for (int i=0;i < moves.size(); i++){
+                    System.out.print((char)(moves.get(i).get(0)+65));
+                    System.out.print((char)(moves.get(i).get(1)+65));
+                    System.out.print("\n");
+                }
+            }
+
+
+
+
+
+            if(Objects.equals(playerTurn, player1)){
+                playerTurn = player2;
+            }
+            else{
+                playerTurn = player1;
+            }
+
+
+
+        }
+    }
+
 }
