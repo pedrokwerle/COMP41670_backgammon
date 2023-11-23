@@ -31,6 +31,7 @@ public class GameMaster {
         ArrayList<Lane> lanes = new ArrayList<>();
         ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 
+
         // reordering the lanes for each colour to make finding the possible moves easier.
         if (playerTurn.getPlayerColour() == ColorsAscii.RED){
             for (int i = BackgammonTable.TOTAL_LANES-1; i >= BackgammonTable.LANES_PER_ROW; i--){
@@ -45,6 +46,38 @@ public class GameMaster {
             }
             for (int i = BackgammonTable.LANES_PER_ROW; i < BackgammonTable.TOTAL_LANES; i++){
                 lanes.add(table.getLane(i));
+            }
+        }
+
+        if (this.table.getBarArea().getSize() != 0) {
+            for (int i = 0; i < this.table.getBarArea().getSize(); i++){
+                ArrayList<Checker> barCheckers = this.table.getBarArea().getCheckers();
+                if (barCheckers.get(i).getColor() == playerTurn.getPlayerColour()){
+                    for (int j = 0;j < playerTurn.getDie().size();j++){
+                        ArrayList<Integer> move = new ArrayList<>();
+                        if (lanes.get(-1+playerTurn.getDie().get(j).getValue()).getColour() == playerTurn.getPlayerColour()){
+                            //is a possible move, just adds to the lanes
+                            move.add(-1);
+                            move.add(-1 + playerTurn.getDie().get(j).getValue());
+                            moves.add(move);
+                        }
+                        else if(lanes.get(-1+playerTurn.getDie().get(j).getValue()).getSize() == 1){
+                            // will kill the enemy piece and send it to the bar
+                            move.add(-1);
+                            move.add(-1+playerTurn.getDie().get(j).getValue());
+                            moves.add(move);
+                        }
+                        else if(lanes.get(-1+playerTurn.getDie().get(j).getValue()).getSize() == 0) {
+                            //is a possible move, just adds to the lanes
+                            move.add(-1);
+                            move.add(-1+playerTurn.getDie().get(j).getValue());
+                            moves.add(move);
+                        }
+                    }
+                    if (!moves.isEmpty()) {
+                        return moves;
+                    }
+                }
             }
         }
 
@@ -283,10 +316,15 @@ public class GameMaster {
         else if (table.getLanes().get(unOrder(movePair.get(1))).getColour() != playerTurn.getPlayerColour() && table.getLanes().get(unOrder(movePair.get(1))).getSize() == 1){
             barMove(movePair);
         }
+        else if (movePair.get(0) == -1) fromBarMove(movePair);
         else normalMove(movePair);
     }
     private void normalMove(ArrayList<Integer> movePair){
         dealer.moveAChecker(unOrder(movePair.get(0)),unOrder(movePair.get(1)));
+    }
+
+    private void fromBarMove(ArrayList<Integer> movePair) {
+        dealer.moveFromBar(unOrder(movePair.get(1)), playerTurn.getPlayerColour());
     }
     private void barMove(ArrayList<Integer> movePair){
         dealer.moveToBar(unOrder(movePair.get(1)));
