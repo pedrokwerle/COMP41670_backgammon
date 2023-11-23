@@ -57,7 +57,7 @@ public class GameMaster {
                     if (i+playerTurn.getDie().get(j).getValue() >= 24) {
                         // can bear off ** need to add checker that all pieces are home corner**
                         move.add(i);
-                        move.add(29);
+                        move.add(24);
                         moves.add(move);
                     }
                     else if (lanes.get(i+playerTurn.getDie().get(j).getValue()).getColour() == playerTurn.getPlayerColour()){
@@ -145,7 +145,7 @@ public class GameMaster {
         System.out.println(playerTurn.getPlayerName()+" goes first!");
         nextPlayerTurn = playerTurn;
 
-        this.displayManager = new DisplayManager(36,150);
+        this.displayManager = new DisplayManager(36,500);
 
         table = new BackgammonTable();
         table.initializeBoard();
@@ -277,6 +277,18 @@ public class GameMaster {
             }
         }
 
+        if (movePair.get(1) >= 24){
+            // this is bear off not move to bar
+            dealer.moveToBar(unOrder(movePair.get(0)));
+            return;
+        }
+
+        if (this.table.getLane(unOrder(movePair.get(1))).getSize() == 1 && this.table.getLane(unOrder(movePair.get(1))).getColour() != playerTurn.getPlayerColour()){
+            dealer.moveToBar(unOrder(movePair.get(1)));
+            dealer.moveAChecker(unOrder(movePair.get(0)), unOrder(movePair.get(1)));
+            return;
+        }
+
 
         if (playerTurn.getPlayerColour() == ColorsAscii.RED){
             if (movePair.get(0) < BackgammonTable.LANES_PER_ROW){
@@ -374,6 +386,22 @@ public class GameMaster {
                 i++;
             }
         }
+    }
+
+    public int unOrder(int moveIndex){
+        if (playerTurn.getPlayerColour() == ColorsAscii.RED) {
+            if (moveIndex < BackgammonTable.LANES_PER_ROW) {
+                moveIndex = BackgammonTable.TOTAL_LANES - 1 - moveIndex;
+            } else {
+                moveIndex =  moveIndex - 12;
+            }
+        }
+        else if (playerTurn.getPlayerColour() == ColorsAscii.WHITE){
+            if (moveIndex < BackgammonTable.LANES_PER_ROW){
+                moveIndex = BackgammonTable.LANES_PER_ROW-1-moveIndex;
+            }
+        }
+        return moveIndex;
     }
 
 }
