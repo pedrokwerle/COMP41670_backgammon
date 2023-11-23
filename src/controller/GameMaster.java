@@ -31,14 +31,14 @@ public class GameMaster {
         ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 
         // reordering the lanes for each colour to make finding the possible moves easier.
-        if (playerTurn.getPlayerColour() == ColorsAscii.RED){
+        if (playerTurn.getPlayerColour() == ColorsAscii.WHITE){
             for (int i = BackgammonTable.TOTAL_LANES-1; i >= BackgammonTable.LANES_PER_ROW; i--){
                 lanes.add(table.getLane(i));
             }
             for (int i = 0; i < BackgammonTable.LANES_PER_ROW; i++){
                 lanes.add(table.getLane(i));
             }
-        } else if (playerTurn.getPlayerColour() == ColorsAscii.WHITE) {
+        } else if (playerTurn.getPlayerColour() == ColorsAscii.RED) {
             for (int i = BackgammonTable.LANES_PER_ROW-1; i >= 0; i--){
                 lanes.add(table.getLane(i));
             }
@@ -266,10 +266,35 @@ public class GameMaster {
                 break;
             }
         }
-        dealer.moveAChecker(movePair.get(0), movePair.get(1));
+
+
+        if (playerTurn.getPlayerColour() == ColorsAscii.RED){
+            if (movePair.get(0) < BackgammonTable.LANES_PER_ROW){
+                movePair.set(0,BackgammonTable.TOTAL_LANES-1-movePair.get(0));
+            }
+            else if (movePair.get(0) >= BackgammonTable.LANES_PER_ROW){
+                movePair.set(0,movePair.get(0)-12);
+            }
+            if (movePair.get(1) < BackgammonTable.LANES_PER_ROW){
+                movePair.set(1,BackgammonTable.TOTAL_LANES-1-movePair.get(1));
+            }
+            else if (movePair.get(1) >= BackgammonTable.LANES_PER_ROW){
+                movePair.set(1,movePair.get(1)-12);
+            }
+        }
+        else if (playerTurn.getPlayerColour() == ColorsAscii.WHITE){
+            if (movePair.get(0) < BackgammonTable.LANES_PER_ROW){
+                movePair.set(0,BackgammonTable.LANES_PER_ROW-1-movePair.get(0));
+            }
+            if (movePair.get(1) < BackgammonTable.LANES_PER_ROW){
+                movePair.set(1,BackgammonTable.LANES_PER_ROW-1-movePair.get(1));
+            }
+        }
+
+
+        dealer.moveAChecker(movePair.get(0),movePair.get(1));
     }
 
-    private void printMoves() {
     private void printMoves(int yPos) {
         ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
         moves = listMoves();
