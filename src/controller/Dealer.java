@@ -17,6 +17,10 @@ public class Dealer {
          Checker checker = table.getLanes().get(fromLaneNum).removeChecker();
          table.getLanes().get(toLaneNum).addChecker(checker);
      }
+     public void moveToBar(int fromLaneNum){
+         Checker checker = table.getLanes().get(fromLaneNum).removeChecker();
+         table.getBarArea().addChecker(checker);
+     }
 
 
 }

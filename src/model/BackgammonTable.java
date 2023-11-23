@@ -16,11 +16,14 @@ public class BackgammonTable implements Displayable {
     public static final int BAR_WIDTH = 7;
     public static final int BOTTOM_OFF_FRAME = 28; // first blank line under the frame
 
+    Lane barArea;
+
 
 
     public BackgammonTable(){
         this.lanes = new ArrayList<>();
         this.asciiArt = new AsciiArt("");
+        this.barArea = new LaneUpward();
     }
 
     public void initializeBoard(){
@@ -74,6 +77,7 @@ public class BackgammonTable implements Displayable {
     public ArrayList<Lane> getLanes(){
         return this.lanes;
     }
+    public Lane getBarArea(){return this.barArea;}
 
 
 
@@ -122,6 +126,9 @@ public class BackgammonTable implements Displayable {
             xpos += LANE_SPACING;
         }
 
+        // Bar area
+        this.asciiArt.addComponent(barArea, LANES_PER_ROW*LANE_SPACING/2+2,BOTTOM_ROW_POSITION);
+        this.barArea.renderArt();
 
 
     }
