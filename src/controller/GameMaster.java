@@ -289,6 +289,19 @@ public class GameMaster {
             return;
         }
 
+        boolean normalMove = false;
+        boolean barMove = false;
+        boolean bearOffMove = false;
+
+        if (movePair.get(1)<0){
+            bearOffMove = true;
+        }
+        else if (table.getLanes().get(movePair.get(1)).getColour() != playerTurn.getPlayerColour()){
+            barMove = true;
+        }
+        else normalMove = true;
+
+
 
         if (playerTurn.getPlayerColour() == ColorsAscii.RED){
             if (movePair.get(0) < BackgammonTable.LANES_PER_ROW){
@@ -315,6 +328,15 @@ public class GameMaster {
 
 
         dealer.moveAChecker(movePair.get(0),movePair.get(1));
+    }
+    private void normalMove(){
+
+    }
+    private void barMove(){
+
+    }
+    private void bearOffMove(){
+
     }
 
     private void printMoves(int yPos) {
