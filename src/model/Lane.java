@@ -32,6 +32,9 @@ public abstract class Lane implements Displayable {
     }
 
     public int getSize(){return size();}
+    public ArrayList<Checker> getCheckers(){
+        return this.checkers;
+    }
 
 
     //AsciiArt

@@ -5,6 +5,7 @@ import model.Checker;
 import model.MovesLog;
 import userInterface.ColorsAscii;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Dealer {
@@ -23,6 +24,17 @@ public class Dealer {
      public void moveToBar(int fromLaneNum){
          Checker checker = table.getLanes().get(fromLaneNum).removeChecker();
          table.getBarArea().addChecker(checker);
+     }
+     public void moveFromBar(int toLaneNum, ColorsAscii color){
+         ArrayList<Checker> barCheckers = table.getBarArea().getCheckers();
+         for (int i = 0; i < barCheckers.size(); i++){
+             if(barCheckers.get(i).getColor() == color){
+                 Checker checker = barCheckers.get(i);
+                 barCheckers.remove(i);
+                 table.getLane(toLaneNum).addChecker(checker);
+                 return;
+             }
+         }
      }
 
      public void bearCheckerOff(int fromLaneNum){
