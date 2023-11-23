@@ -145,7 +145,7 @@ public class GameMaster {
         System.out.println(playerTurn.getPlayerName()+" goes first!");
         nextPlayerTurn = playerTurn;
 
-        this.displayManager = new DisplayManager(40,100);
+        this.displayManager = new DisplayManager(36,150);
 
         table = new BackgammonTable();
         table.initializeBoard();
@@ -195,13 +195,18 @@ public class GameMaster {
         userInput = key.getString();
     }
     public void interpretCommand(){
+
+        int numMoves = listMoves().size();
+        if(numMoves == 0){
+            numMoves = 1; // might be dangerous
+        }
         if (Objects.equals(userInput.toLowerCase(), "quit")) {
             commandType = CommandType.QUIT;
         }
         else if (Objects.equals(userInput.toLowerCase(), "roll")){
             commandType = CommandType.ROLL;
         }
-        else if (userInput.toLowerCase().matches("[a-"+ (char)('a'+(listMoves().size()-1)) + "]")){
+        else if (userInput.toLowerCase().matches("[a-"+ (char)('a'+numMoves-1) + "]")){
             commandType = CommandType.MOVE;
         }
         else if (Objects.equals(userInput.toLowerCase(), "hint") || Objects.equals(userInput.toLowerCase(), "help")){
@@ -230,7 +235,7 @@ public class GameMaster {
                     playerTurn.setHasRolled(true);
                 }
                 else {
-                    displayManager.addToCache(new AsciiString("You have already rolled: "+playerTurn.getDie().get(0) +" and "+ playerTurn.getDie().get(1)),0,BackgammonTable.BOTTOM_OFF_FRAME);
+                    displayManager.addToCache(new AsciiString("You have already rolled: "+playerTurn.getDie().get(0).getValue() +" and "+ playerTurn.getDie().get(1).getValue()),0,BackgammonTable.BOTTOM_OFF_FRAME);
                     printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
                 }
 
@@ -248,7 +253,7 @@ public class GameMaster {
                 nextPlayerTurn = playerTurn;
                 break;
             case INVALID:
-                System.out.println("Invalid command. Please type 'help' or 'hint' to see the list of commands.");
+                displayManager.addToCache(new AsciiString("Invalid command. Please type 'help' or 'hint' to see the list of commands."), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
                 nextPlayerTurn = playerTurn;
                 break;
             default:
@@ -347,19 +352,21 @@ public class GameMaster {
             player2.setPipScore(redPip);
         }
 
-        System.out.println(player1.getPlayerName() + "'s pip score is: " + player1.getPipScore());
-        System.out.println(player2.getPlayerName() + "'s pip score is: " + player2.getPipScore());
+        displayManager.addToCache(new AsciiString(player1.getPlayerName() + "'s pip score is: " + player1.getPipScore()), 0, BackgammonTable.BOTTOM_OFF_FRAME);
+        displayManager.addToCache(new AsciiString(player1.getPlayerName() + "'s pip score is: " + player2.getPipScore()), 0, BackgammonTable.BOTTOM_OFF_FRAME+1);
 
     }
 
     public void hintCommand(){
-        System.out.println("Available commands: ");
+        displayManager.addToCache(new AsciiString("Available commands"), 0, BackgammonTable.BOTTOM_OFF_FRAME);
+        int i = 0;
         for (CommandType command : CommandType.values()){
             if (Objects.equals(command,CommandType.INVALID)){
 
             }
             else {
-                System.out.println("--   "+command.getDescription());
+                displayManager.addToCache(new AsciiString("--   "+command.getDescription()), 0, BackgammonTable.BOTTOM_OFF_FRAME+i+1);
+                i++;
             }
         }
     }
