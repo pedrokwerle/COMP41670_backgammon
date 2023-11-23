@@ -306,10 +306,7 @@ public class GameMaster {
             }
         }
 
-        boolean normalMove = false;
-        boolean barMove = false;
-        boolean bearOffMove = false;
-
+        // TODO: make kill move after from bar move
         if (movePair.get(1)>=24){
             bearOffMove(movePair);
         }
