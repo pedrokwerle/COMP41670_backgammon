@@ -384,7 +384,7 @@ public class GameMaster {
         }
 
         displayManager.addToCache(new AsciiString(player1.getPlayerName() + "'s pip score is: " + player1.getPipScore()), 0, BackgammonTable.BOTTOM_OFF_FRAME);
-        displayManager.addToCache(new AsciiString(player1.getPlayerName() + "'s pip score is: " + player2.getPipScore()), 0, BackgammonTable.BOTTOM_OFF_FRAME+1);
+        displayManager.addToCache(new AsciiString(player2.getPlayerName() + "'s pip score is: " + player2.getPipScore()), 0, BackgammonTable.BOTTOM_OFF_FRAME+1);
 
     }
 
