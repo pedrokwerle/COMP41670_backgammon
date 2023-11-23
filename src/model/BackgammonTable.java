@@ -13,6 +13,7 @@ public class BackgammonTable implements Displayable {
     public static final int TOTAL_LANES = 24;
     public static final int LANE_SPACING = 8;
     public static final int BOTTOM_ROW_POSITION = 24;
+    public static final int BAR_WIDTH = 7;
     public static final int BOTTOM_OFF_FRAME = 28; // first blank line under the frame
 
 
@@ -95,7 +96,7 @@ public class BackgammonTable implements Displayable {
         }
 
         // top lanes right
-        xpos += 1;
+        xpos += BAR_WIDTH;
         for (int i = LANES_PER_ROW/2; i < LANES_PER_ROW; i++){
             this.asciiArt.addComponent(this.lanes.get(i),xpos,ypos);
             this.lanes.get(i).renderArt();
@@ -114,7 +115,7 @@ public class BackgammonTable implements Displayable {
 
 
         // bottom lanes right
-        xpos +=1;
+        xpos += BAR_WIDTH;
         for (int i = (TOTAL_LANES+LANES_PER_ROW)/2; i < TOTAL_LANES; i++){
             this.asciiArt.addComponent(this.lanes.get(i),xpos,ypos);
             this.lanes.get(i).renderArt();
