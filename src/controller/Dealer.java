@@ -3,6 +3,9 @@ package controller;
 import model.BackgammonTable;
 import model.Checker;
 import model.MovesLog;
+import userInterface.ColorsAscii;
+
+import java.util.Objects;
 
 public class Dealer {
     MovesLog log;
@@ -20,6 +23,16 @@ public class Dealer {
      public void moveToBar(int fromLaneNum){
          Checker checker = table.getLanes().get(fromLaneNum).removeChecker();
          table.getBarArea().addChecker(checker);
+     }
+
+     public void bearCheckerOff(int fromLaneNum){
+         Checker checker = table.getLanes().get(fromLaneNum).removeChecker();
+         if (Objects.equals(checker.getColor(),ColorsAscii.RED)){
+             table.getRedBearArea().addChecker(checker);
+         }
+         else {
+             table.getWhiteBearArea().addChecker(checker);
+         }
      }
 
 

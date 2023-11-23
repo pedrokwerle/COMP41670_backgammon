@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class BackgammonTable implements Displayable {
     ArrayList<Lane> lanes;
+    public static final int CHECKER_STARTING_YPOS =2; // so they don't collide with the frame
     public static final int LANES_PER_ROW = 12;
     public static final int TOTAL_LANES = 24;
     public static final int LANE_SPACING = 8;
@@ -17,6 +18,8 @@ public class BackgammonTable implements Displayable {
     public static final int BOTTOM_OFF_FRAME = 28; // first blank line under the frame
 
     Lane barArea;
+    Lane redBearArea;
+    Lane whiteBearArea;
 
 
 
@@ -24,6 +27,8 @@ public class BackgammonTable implements Displayable {
         this.lanes = new ArrayList<>();
         this.asciiArt = new AsciiArt("");
         this.barArea = new LaneUpward();
+        this.redBearArea = new LaneDownward();
+        this.whiteBearArea = new LaneUpward();
     }
 
     public void initializeBoard(){
@@ -79,7 +84,13 @@ public class BackgammonTable implements Displayable {
     }
     public Lane getBarArea(){return this.barArea;}
 
+    public Lane getRedBearArea() {
+        return redBearArea;
+    }
 
+    public Lane getWhiteBearArea() {
+        return whiteBearArea;
+    }
 
     // Ascii art section:
 
@@ -90,7 +101,7 @@ public class BackgammonTable implements Displayable {
         this.asciiArt.clearComponents();
 
         int xpos = 2;
-        int ypos = 2;
+        int ypos = CHECKER_STARTING_YPOS;
 
         // top lanes left
         for (int i = 0; i < LANES_PER_ROW/2; i++){
@@ -127,9 +138,15 @@ public class BackgammonTable implements Displayable {
         }
 
         // Bar area
-        this.asciiArt.addComponent(barArea, LANES_PER_ROW*LANE_SPACING/2+2,BOTTOM_ROW_POSITION);
+        this.asciiArt.addComponent(barArea, LANES_PER_ROW*LANE_SPACING/2+CHECKER_STARTING_YPOS,BOTTOM_ROW_POSITION);
         this.barArea.renderArt();
 
+        // Bear off areas
+        this.asciiArt.addComponent(redBearArea, LANES_PER_ROW*LANE_SPACING+BAR_WIDTH+2,CHECKER_STARTING_YPOS);
+        this.redBearArea.renderArt();
+
+        this.asciiArt.addComponent(whiteBearArea, LANES_PER_ROW*LANE_SPACING+BAR_WIDTH+2,BOTTOM_ROW_POSITION);
+        this.whiteBearArea.renderArt();
 
     }
 

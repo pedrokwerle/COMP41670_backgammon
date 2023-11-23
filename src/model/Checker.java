@@ -19,6 +19,11 @@ public class Checker implements Displayable {
     // AsciiArt section
     AsciiArt asciiArt;
     ColorsAscii color;
+
+    public ColorsAscii getColor() {
+        return color;
+    }
+
     @Override
     public void renderArt() {
         try {

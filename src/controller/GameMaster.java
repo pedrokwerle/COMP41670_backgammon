@@ -170,7 +170,6 @@ public class GameMaster {
             interpretCommand();
             executeCommand();
 
-
             playerTurn = nextPlayerTurn;
         }
     }
