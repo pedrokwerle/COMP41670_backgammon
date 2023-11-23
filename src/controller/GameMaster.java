@@ -206,7 +206,7 @@ public class GameMaster {
         else if (Objects.equals(userInput.toLowerCase(), "roll")){
             commandType = CommandType.ROLL;
         }
-        else if (userInput.toLowerCase().matches("[a-"+ (char)('a'+numMoves-1) + "]")){
+        else if (userInput.toLowerCase().matches("["+(char)('a'-1)+'-'+ (char)('a'+numMoves) + "]")){
             commandType = CommandType.MOVE;
         }
         else if (Objects.equals(userInput.toLowerCase(), "hint") || Objects.equals(userInput.toLowerCase(), "help")){
