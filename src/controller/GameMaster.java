@@ -235,7 +235,7 @@ public class GameMaster {
                     playerTurn.setHasRolled(true);
                 }
                 else {
-                    displayManager.addToCache(new AsciiString("You have already rolled: "+playerTurn.getDie().get(0).getValue() +" and "+ playerTurn.getDie().get(1).getValue()),0,BackgammonTable.BOTTOM_OFF_FRAME);
+                    displayManager.addToCache(new AsciiString("You have already rolled"),0,BackgammonTable.BOTTOM_OFF_FRAME);
                     printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
                 }
 
