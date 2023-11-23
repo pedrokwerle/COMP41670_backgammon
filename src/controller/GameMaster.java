@@ -31,14 +31,14 @@ public class GameMaster {
         ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 
         // reordering the lanes for each colour to make finding the possible moves easier.
-        if (playerTurn.getPlayerColour() == ColorsAscii.WHITE){
+        if (playerTurn.getPlayerColour() == ColorsAscii.RED){
             for (int i = BackgammonTable.TOTAL_LANES-1; i >= BackgammonTable.LANES_PER_ROW; i--){
                 lanes.add(table.getLane(i));
             }
             for (int i = 0; i < BackgammonTable.LANES_PER_ROW; i++){
                 lanes.add(table.getLane(i));
             }
-        } else if (playerTurn.getPlayerColour() == ColorsAscii.RED) {
+        } else if (playerTurn.getPlayerColour() == ColorsAscii.WHITE) {
             for (int i = BackgammonTable.LANES_PER_ROW-1; i >= 0; i--){
                 lanes.add(table.getLane(i));
             }
@@ -243,6 +243,12 @@ public class GameMaster {
                 break;
             case MOVE:
                 moveCommand();
+                if (this.playerTurn.getDie().isEmpty()){
+                    if (player1 == playerTurn) nextPlayerTurn = player2;
+                    else nextPlayerTurn = player1;
+                    playerTurn.setHasRolled(false);
+                }
+                printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
                 break;
             case PIP:
                 pipCommand();
