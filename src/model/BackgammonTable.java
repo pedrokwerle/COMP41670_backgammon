@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class BackgammonTable implements Displayable {
     ArrayList<Lane> lanes;
+    public static final int TOTAL_PLAYER_CHECKER_NUM = 15;
     public static final int CHECKER_STARTING_YPOS =2; // so they don't collide with the frame
     public static final int LANES_PER_ROW = 12;
     public static final int TOTAL_LANES = 24;
@@ -73,6 +74,9 @@ public class BackgammonTable implements Displayable {
             color = ColorsAscii.WHITE;
 
         }
+
+        // Test for end game
+        //for (int i = 0; i<14;i++) this.redBearArea.addChecker(new Checker(ColorsAscii.RED));
     }
 
     public Lane getLane(int laneNum){

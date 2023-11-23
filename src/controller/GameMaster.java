@@ -15,6 +15,7 @@ public class GameMaster {
     Player player2;
     Player playerTurn;
     Player nextPlayerTurn;
+    Player winnerPlayer;
     DisplayManager displayManager;
     Dealer dealer;
     BackgammonTable table;
@@ -132,9 +133,11 @@ public class GameMaster {
         // Initialization complete
 
         this.gameLoop();
+        System.out.println("Congratulations, " + winnerPlayer.getPlayerName() +" has won the game!");
     }
     public void gameLoop(){
-        while(true){
+        boolean gameOver = false;
+        while(!gameOver){
             displayManager.addToCache(0,table, 0, 0);
             setPlayerFrame();
             displayManager.printDisplay();
@@ -144,6 +147,7 @@ public class GameMaster {
             interpretCommand();
             executeCommand();
 
+            gameOver = isGameOver(table);
             playerTurn = nextPlayerTurn;
         }
     }
@@ -159,6 +163,24 @@ public class GameMaster {
             frame.getArt().setFileLocation("/resources/board_frame_white.txt");
             displayManager.addToCache(0,frame, 0, 0);
         }
+    }
+
+
+    // Returns true if the game has ended and sets the winning player in winnerPlayer
+    private boolean isGameOver(BackgammonTable table){
+        Lane redBearArea = table.getRedBearArea();
+        Lane whiteBearArea = table.getWhiteBearArea();
+
+        if(redBearArea.getSize() == BackgammonTable.TOTAL_PLAYER_CHECKER_NUM){
+            winnerPlayer = playerTurn;
+            return true;
+        }
+        else if (whiteBearArea.getSize() == BackgammonTable.TOTAL_PLAYER_CHECKER_NUM){
+            winnerPlayer = playerTurn;
+            return true;
+        }
+        else return false;
+
     }
 
 
