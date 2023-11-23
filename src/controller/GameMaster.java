@@ -81,32 +81,6 @@ public class GameMaster {
                 }
             }
         }
-
-        // unshuffle the lane numbers
-        /*for (int i = 0;i < moves.size();i++){
-            if (playerTurn.getPlayerColour() == ColorsAscii.RED){
-                if (moves.get(i).get(0) < BackgammonTable.LANES_PER_ROW){
-                    moves.get(i).set(0,BackgammonTable.TOTAL_LANES-1-moves.get(i).get(0));
-                }
-                else if (moves.get(i).get(0) >= BackgammonTable.LANES_PER_ROW){
-                    moves.get(i).set(0,moves.get(i).get(0)-12);
-                }
-                if (moves.get(i).get(1) < BackgammonTable.LANES_PER_ROW){
-                    moves.get(i).set(1,BackgammonTable.TOTAL_LANES-1-moves.get(i).get(1));
-                }
-                else if (moves.get(i).get(1) >= BackgammonTable.LANES_PER_ROW){
-                    moves.get(i).set(1,moves.get(i).get(1)-12);
-                }
-            }
-            else if (playerTurn.getPlayerColour() == ColorsAscii.WHITE){
-                if (moves.get(i).get(0) < BackgammonTable.LANES_PER_ROW){
-                    moves.get(i).set(0,BackgammonTable.LANES_PER_ROW-1-moves.get(i).get(0));
-                }
-                if (moves.get(i).get(1) < BackgammonTable.LANES_PER_ROW){
-                    moves.get(i).set(1,BackgammonTable.LANES_PER_ROW-1-moves.get(i).get(1));
-                }
-            }
-        }*/
         return moves;
     }
 
@@ -277,66 +251,27 @@ public class GameMaster {
             }
         }
 
-        if (movePair.get(1) >= 24){
-            // this is bear off not move to bar
-            dealer.moveToBar(unOrder(movePair.get(0)));
-            return;
-        }
-
-        if (this.table.getLane(unOrder(movePair.get(1))).getSize() == 1 && this.table.getLane(unOrder(movePair.get(1))).getColour() != playerTurn.getPlayerColour()){
-            dealer.moveToBar(unOrder(movePair.get(1)));
-            dealer.moveAChecker(unOrder(movePair.get(0)), unOrder(movePair.get(1)));
-            return;
-        }
-
         boolean normalMove = false;
         boolean barMove = false;
         boolean bearOffMove = false;
 
-        if (movePair.get(1)<0){
-            bearOffMove = true;
+        if (movePair.get(1)>=24){
+            bearOffMove(movePair);
         }
-        else if (table.getLanes().get(movePair.get(1)).getColour() != playerTurn.getPlayerColour()){
-            barMove = true;
+        else if (table.getLanes().get(unOrder(movePair.get(1))).getColour() != playerTurn.getPlayerColour() && table.getLanes().get(unOrder(movePair.get(1))).getSize() == 1){
+            barMove(movePair);
         }
-        else normalMove = true;
-
-
-
-        if (playerTurn.getPlayerColour() == ColorsAscii.RED){
-            if (movePair.get(0) < BackgammonTable.LANES_PER_ROW){
-                movePair.set(0,BackgammonTable.TOTAL_LANES-1-movePair.get(0));
-            }
-            else if (movePair.get(0) >= BackgammonTable.LANES_PER_ROW){
-                movePair.set(0,movePair.get(0)-12);
-            }
-            if (movePair.get(1) < BackgammonTable.LANES_PER_ROW){
-                movePair.set(1,BackgammonTable.TOTAL_LANES-1-movePair.get(1));
-            }
-            else if (movePair.get(1) >= BackgammonTable.LANES_PER_ROW){
-                movePair.set(1,movePair.get(1)-12);
-            }
-        }
-        else if (playerTurn.getPlayerColour() == ColorsAscii.WHITE){
-            if (movePair.get(0) < BackgammonTable.LANES_PER_ROW){
-                movePair.set(0,BackgammonTable.LANES_PER_ROW-1-movePair.get(0));
-            }
-            if (movePair.get(1) < BackgammonTable.LANES_PER_ROW){
-                movePair.set(1,BackgammonTable.LANES_PER_ROW-1-movePair.get(1));
-            }
-        }
-
-
-        dealer.moveAChecker(movePair.get(0),movePair.get(1));
+        else normalMove(movePair);
     }
-    private void normalMove(){
-
+    private void normalMove(ArrayList<Integer> movePair){
+        dealer.moveAChecker(unOrder(movePair.get(0)),unOrder(movePair.get(1)));
     }
-    private void barMove(){
-
+    private void barMove(ArrayList<Integer> movePair){
+        dealer.moveToBar(unOrder(movePair.get(1)));
+        dealer.moveAChecker(unOrder(movePair.get(0)), unOrder(movePair.get(1)));
     }
-    private void bearOffMove(){
-
+    private void bearOffMove(ArrayList<Integer> movePair){
+        dealer.bearCheckerOff(unOrder(movePair.get(0)));
     }
 
     private void printMoves(int yPos) {
