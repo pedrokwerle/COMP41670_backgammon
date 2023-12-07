@@ -32,7 +32,7 @@ public class Fileio {
         String line = this.reader.readLine();
         if (line == null){
             this.closeReader();
-            throw new EOFException("End of file");}
+        }
         return line;
     }
     public char readChar() throws IOException{

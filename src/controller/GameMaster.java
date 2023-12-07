@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class GameMaster {
-    ArrayList<String> moveLog;
+public class GameMaster implements Runnable{
     Player player1;
     Player player2;
     Player playerTurn;
@@ -21,11 +20,13 @@ public class GameMaster {
     Dealer dealer;
     BackgammonTable table;
     Keyboard key;
-    String userInput;
+    String currentInput;
     CommandType commandType;
 
-    public GameMaster() {
+    public GameMaster(Object lock) {
         this.key = new Keyboard();
+        this.testMode = false;
+        this.lock = lock;
     }
 
     public ArrayList<ArrayList<Integer>> listMoves(){
@@ -166,8 +167,14 @@ public class GameMaster {
         this.dealer = new Dealer(table);
         // Initialization complete
 
+
+        synchronized (lock) {
+            lock.notify(); // Notify the waiting GameTester thread
+        }
+
         this.gameLoop();
         System.out.println("Congratulations, " + winnerPlayer.getPlayerName() +" has won the game!");
+
     }
     public void gameLoop(){
         boolean gameOver = false;
@@ -177,7 +184,7 @@ public class GameMaster {
             displayManager.printDisplay();
             displayManager.clearCache();
 
-            takeInput();
+            String input = getNextInput();
             interpretCommand();
             executeCommand();
 
@@ -235,37 +242,33 @@ public class GameMaster {
         // check for WHITE player
     }
 
-
     // **Command section**
-    public void takeInput(){
-        System.out.println(playerTurn.getPlayerName()+" please enter your command: ");
-        userInput = key.getString();
-    }
+
     public void interpretCommand(){
 
         int numMoves = listMoves().size();
         if(numMoves == 0){
             numMoves = 1; // might be dangerous
         }
-        if (Objects.equals(userInput.toLowerCase(), "quit")) {
+        if (Objects.equals(currentInput.toLowerCase(), "quit")) {
             commandType = CommandType.QUIT;
         }
-        else if (Objects.equals(userInput.toLowerCase(), "roll")){
+        else if (Objects.equals(currentInput.toLowerCase(), "roll")){
             commandType = CommandType.ROLL;
         }
-        else if (userInput.toLowerCase().matches("["+(char)('a'-1)+'-'+ (char)('a'+numMoves) + "]")){
+        else if (currentInput.toLowerCase().matches("["+(char)('a'-1)+'-'+ (char)('a'+numMoves) + "]")){
             commandType = CommandType.MOVE;
         }
-        else if (Objects.equals(userInput.toLowerCase(), "hint") || Objects.equals(userInput.toLowerCase(), "help")){
+        else if (Objects.equals(currentInput.toLowerCase(), "hint") || Objects.equals(currentInput.toLowerCase(), "help")){
             commandType = CommandType.HINT;
         }
-        else if (Objects.equals(userInput.toLowerCase(), "pip")){
+        else if (Objects.equals(currentInput.toLowerCase(), "pip")){
             commandType = CommandType.PIP;
         }
-        else if(Objects.equals(userInput.toLowerCase(), "test")){
+        else if(Objects.equals(currentInput.toLowerCase(), "test")){
             commandType = CommandType.TEST;
         }
-        else if(userInput.toLowerCase().matches("dice\\s\\d+\\s\\d+")){
+        else if(currentInput.toLowerCase().matches("dice\\s\\d+\\s\\d+")){
             commandType = CommandType.DICE;
         }
         else commandType = CommandType.INVALID;
@@ -312,7 +315,7 @@ public class GameMaster {
                 diceCommand();
                 break;
             case TEST:
-
+                this.testMode = true;
                 break;
             case INVALID:
                 displayManager.addToCache(new AsciiString("Invalid command. Please type 'help' or 'hint' to see the list of commands."), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
@@ -323,7 +326,7 @@ public class GameMaster {
     }
 
     public void moveCommand(){
-        int moveIndex = userInput.getBytes()[0]-97;
+        int moveIndex = currentInput.getBytes()[0]-97;
         ArrayList<ArrayList<Integer>> moves = listMoves();
         ArrayList<Integer> movePair = moves.get(moveIndex);
         int diceSize = Math.abs(movePair.get(0)-movePair.get(1));
@@ -434,7 +437,7 @@ public class GameMaster {
 
     private void diceCommand(){
         // THIS COMMAND DOES NOT RESULT IN THE MOVES LIST GETTING PRINTED FOR THE PLAYER
-        String[] tokens = userInput.split("\\s");
+        String[] tokens = currentInput.split("\\s");
         Dice die_1 = new Dice();
         Dice die_2 = new Dice();
         int num1 = Integer.parseInt(tokens[1]);
@@ -461,6 +464,51 @@ public class GameMaster {
             }
         }
         return moveIndex;
+    }
+
+
+
+    // Threaded stuff
+    private boolean inputReady;
+    private boolean testMode;
+    private Object lock;
+    @Override
+    public void run() {
+        startGame();
+    }
+
+    public synchronized boolean testMode() {
+        return this.testMode;
+    }
+
+    public void setTestMode(boolean testMode) {
+        this.testMode = testMode;
+    }
+
+    public synchronized void processInput(String input) {
+        while (inputReady) {
+            try {
+                wait(); // Wait if input is already present
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        currentInput = input;
+        inputReady = true;
+        notify(); // Notify that input is ready for processing
+    }
+
+    public synchronized String getNextInput() {
+        while (!inputReady) {
+            try {
+                wait(); // Wait for input to be available
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        inputReady = false;
+        notify(); // Notify that input has been consumed
+        return currentInput;
     }
 
 }
