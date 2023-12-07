@@ -7,6 +7,7 @@ import userInterface.Keyboard;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class GameMaster {
@@ -153,7 +154,7 @@ public class GameMaster {
         System.out.println(playerTurn.getPlayerName()+" goes first!");
         nextPlayerTurn = playerTurn;
 
-        this.displayManager = new DisplayManager(36,500);
+        this.displayManager = new DisplayManager(40,500);
 
         table = new BackgammonTable();
         table.initializeBoard();
@@ -216,6 +217,24 @@ public class GameMaster {
 
     }
 
+    private void checkBearOff(){
+        ColorsAscii playerColor = playerTurn.getPlayerColour();
+        // check for RED player
+        if (playerColor == ColorsAscii.RED){
+            boolean canBearOff = true;
+            // Set the bounds of the quadrant where the player can bear off
+            int lowestLane = 6;
+            int highestLane = 11;
+            for(int i = 0; i<BackgammonTable.TOTAL_LANES;i++){
+                if(lowestLane < i && i < highestLane){
+
+                }
+            }
+        }
+
+        // check for WHITE player
+    }
+
 
     // **Command section**
     public void takeInput(){
@@ -245,6 +264,9 @@ public class GameMaster {
         }
         else if(Objects.equals(userInput.toLowerCase(), "test")){
             commandType = CommandType.TEST;
+        }
+        else if(userInput.toLowerCase().matches("dice\\s\\d+\\s\\d+")){
+            commandType = CommandType.DICE;
         }
         else commandType = CommandType.INVALID;
     }
@@ -285,6 +307,12 @@ public class GameMaster {
             case HINT:
                 hintCommand();
                 nextPlayerTurn = playerTurn;
+                break;
+            case DICE:
+                diceCommand();
+                break;
+            case TEST:
+
                 break;
             case INVALID:
                 displayManager.addToCache(new AsciiString("Invalid command. Please type 'help' or 'hint' to see the list of commands."), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
@@ -332,22 +360,24 @@ public class GameMaster {
     }
 
     private void printMoves(int yPos) {
-        ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
-        moves = listMoves();
+        if (playerTurn.getHasRolled()) {
+            ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
+            moves = listMoves();
 
-        displayManager.addToCache(new AsciiString("Possible moves"), 0, yPos);
-        String string = new String();
-        for (int i=0;i < moves.size(); i++){
-            string = string + (char)(i+65) + ") ";
-            string = string + (24-moves.get(i).get(0));
-            string = string + " -> ";
-            string = string + (24-moves.get(i).get(1));
-            string = string + "\n";
+            displayManager.addToCache(new AsciiString("Possible moves"), 0, yPos);
+            String string = new String();
+            for (int i = 0; i < moves.size(); i++) {
+                string = string + (char) (i + 65) + ") ";
+                string = string + (24 - moves.get(i).get(0));
+                string = string + " -> ";
+                string = string + (24 - moves.get(i).get(1));
+                string = string + "\n";
+            }
+            displayManager.addToCache(new AsciiString(string), 0, yPos + 1);
         }
-        displayManager.addToCache(new AsciiString(string), 0, yPos+1);
     }
 
-    public void pipCommand(){
+    private void pipCommand(){
         // reordering the lanes for each colour to make finding the possible moves easier.
         ArrayList<Lane> lanes = new ArrayList<>();
 
@@ -388,7 +418,7 @@ public class GameMaster {
 
     }
 
-    public void hintCommand(){
+    private void hintCommand(){
         displayManager.addToCache(new AsciiString("Available commands"), 0, BackgammonTable.BOTTOM_OFF_FRAME);
         int i = 0;
         for (CommandType command : CommandType.values()){
@@ -400,6 +430,21 @@ public class GameMaster {
                 i++;
             }
         }
+    }
+
+    private void diceCommand(){
+        // THIS COMMAND DOES NOT RESULT IN THE MOVES LIST GETTING PRINTED FOR THE PLAYER
+        String[] tokens = userInput.split("\\s");
+        Dice die_1 = new Dice();
+        Dice die_2 = new Dice();
+        int num1 = Integer.parseInt(tokens[1]);
+        int num2 = Integer.parseInt(tokens[2]);
+        die_1.setValue(num1);
+        die_2.setValue(num2);
+        playerTurn.setMoveDie(new ArrayList<Dice>(List.of(die_1, die_2)));
+        printMoves(BackgammonTable.BOTTOM_OFF_FRAME);
+
+
     }
 
     public int unOrder(int moveIndex){

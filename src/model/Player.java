@@ -12,10 +12,20 @@ public class Player {
     private ColorsAscii playerColour;
     private boolean hasRolled;
     private int pipScore;
+    private boolean canBearOff;
+
 
     public Player(String playerName, ColorsAscii playerColour){
         this.playerName = playerName;
         this.playerColour = playerColour;
+    }
+
+    public boolean getCanBearOff() {
+        return canBearOff;
+    }
+
+    public void setCanBearOff(boolean canBearOff) {
+        this.canBearOff = canBearOff;
     }
 
     public void setPlayerName(String playerName){
@@ -65,5 +75,9 @@ public class Player {
 
     public void setHasRolled(boolean hasRolled){
         this.hasRolled = hasRolled;
+    }
+
+    public void setMoveDie(ArrayList<Dice> moveDie) {
+        this.moveDie = moveDie;
     }
 }

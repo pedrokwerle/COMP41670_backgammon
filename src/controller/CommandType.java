@@ -7,7 +7,8 @@ public enum CommandType {
     QUIT("quit: exit the game"),
     PIP("pip: display the pip score for both players"),
     HINT("hint/help: show this message"),
-    TEST("test: run all the moves in a test text file"),
+    DICE("dice <int> <int> : roll two dice with the values equals to the given numbers"),
+    TEST("test <filepath> : run all the moves in a test text file"),
     DOUBLE("double: I don't know yet");
 
     private final String description;
