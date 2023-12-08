@@ -24,7 +24,8 @@ public class Display {
     }
 
     public void print(){
-        for(int row = 0; row< rowsNum; row++){
+        int lastRow = removeWhiteSpace();
+        for(int row = 0; row< lastRow; row++){
             System.out.println();
             for(int col = 0; col< colsNum; col++){
                 PixelAscii pixel = this.pixelGrid[row][col];
@@ -32,6 +33,18 @@ public class Display {
             }
         }
         System.out.println();
+    }
+    private int removeWhiteSpace(){
+        int lastRow;
+        for(lastRow = rowsNum-1; lastRow > 0;lastRow-- ){
+            for(int col = 0; col< colsNum; col++){
+                PixelAscii pixel = this.pixelGrid[lastRow][col];
+                if(pixel.getCharacter()>32){
+                    return lastRow+1;
+                }
+            }
+        }
+        return rowsNum;
     }
     public void resetDisplay(){
         for (int row = 0; row < rowsNum; row++){

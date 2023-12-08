@@ -358,7 +358,7 @@ public class GameMaster implements Runnable{
         else if (movePair.get(0) == -1) fromBarMove(movePair);
         else normalMove(movePair);
 
-        // Finished moving now check if need to change player or show their remaining moves
+        // Finished moving now check if game needs to change player or show their remaining moves
         if (this.playerTurn.getDie().isEmpty()){
             if (player1 == playerTurn) nextPlayerTurn = player2;
             else nextPlayerTurn = player1;
