@@ -245,30 +245,31 @@ public class GameMaster implements Runnable{
     // **Command section**
 
     public void interpretCommand(){
-
+        // lowercase and remove leading or trailing spaces
+        currentInput = currentInput.toLowerCase().trim();
         int numMoves = listMoves().size();
         if(numMoves == 0){
             numMoves = 1; // might be dangerous
         }
-        if (Objects.equals(currentInput.toLowerCase(), "quit")) {
+        if (Objects.equals(currentInput, "quit")) {
             commandType = CommandType.QUIT;
         }
-        else if (Objects.equals(currentInput.toLowerCase(), "roll")){
+        else if (Objects.equals(currentInput, "roll")){
             commandType = CommandType.ROLL;
         }
-        else if (currentInput.toLowerCase().matches("["+(char)('a'-1)+'-'+ (char)('a'+numMoves) + "]")){
+        else if (currentInput.matches("["+(char)('a'-1)+'-'+ (char)('a'+numMoves) + "]")){
             commandType = CommandType.MOVE;
         }
-        else if (Objects.equals(currentInput.toLowerCase(), "hint") || Objects.equals(currentInput.toLowerCase(), "help")){
+        else if (Objects.equals(currentInput, "hint") || Objects.equals(currentInput.toLowerCase(), "help")){
             commandType = CommandType.HINT;
         }
-        else if (Objects.equals(currentInput.toLowerCase(), "pip")){
+        else if (Objects.equals(currentInput, "pip")){
             commandType = CommandType.PIP;
         }
-        else if(Objects.equals(currentInput.toLowerCase(), "test")){
+        else if(currentInput.matches("test\\s.+")){
             commandType = CommandType.TEST;
         }
-        else if(currentInput.toLowerCase().matches("dice\\s\\d+\\s\\d+")){
+        else if(currentInput.matches("dice\\s\\d+\\s\\d+")){
             commandType = CommandType.DICE;
         }
         else commandType = CommandType.INVALID;
@@ -315,7 +316,7 @@ public class GameMaster implements Runnable{
                 diceCommand();
                 break;
             case TEST:
-                this.testMode = true;
+                testCommand();
                 break;
             case INVALID:
                 displayManager.addToCache(new AsciiString("Invalid command. Please type 'help' or 'hint' to see the list of commands."), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
@@ -323,6 +324,17 @@ public class GameMaster implements Runnable{
                 break;
             default:
         }
+    }
+
+    private String testFilePath;
+
+    public String getTestFilePath() {
+        return testFilePath;
+    }
+
+    private void testCommand(){
+        this.testMode = true;
+        testFilePath = currentInput.split("\\s+",2)[1];
     }
 
     public void moveCommand(){
@@ -485,6 +497,8 @@ public class GameMaster implements Runnable{
         this.testMode = testMode;
     }
 
+
+    // This method is only used by the GameTester to tell the game thread to process the input it just acquired
     public synchronized void processInput(String input) {
         currentInput = input;
         waitingForInput = false;
@@ -499,6 +513,8 @@ public class GameMaster implements Runnable{
 
     }
 
+
+    // This method is used by the game thread to ask the input thread for another input
     public synchronized String requestNextInput() {
         waitingForInput = true;
         notify(); // Notify that input has been consumed

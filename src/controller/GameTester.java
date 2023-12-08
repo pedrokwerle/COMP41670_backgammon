@@ -30,7 +30,7 @@ public class GameTester implements Runnable{
         Keyboard key = new Keyboard();
         while (true) {
             if (gameMaster.testMode()) {
-                executeCommandsFromFile("/resources/test_commands.txt"); // Replace "commands.txt" with your file name
+                executeCommandsFromFile(gameMaster.getTestFilePath()); // Replace "commands.txt" with your file name
             } else {
                 String userInput = key.getString();
                 gameMaster.processInput(userInput); // Send user input to GameMaster
@@ -40,7 +40,7 @@ public class GameTester implements Runnable{
 
     private void executeCommandsFromFile(String filename) {
         try {
-            Fileio reader = new Fileio("/resources/test_commands.txt");
+            Fileio reader = new Fileio(filename);
 
                 String line;
 
