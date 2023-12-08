@@ -269,7 +269,7 @@ public class GameMaster implements Runnable{
         else if(currentInput.matches("test\\s.+")){
             commandType = CommandType.TEST;
         }
-        else if(currentInput.matches("dice\\s\\d+\\s\\d+")){
+        else if(currentInput.matches("dice\\s+\\d\\s+\\d")){
             commandType = CommandType.DICE;
         }
         else commandType = CommandType.INVALID;
