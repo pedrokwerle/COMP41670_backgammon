@@ -297,12 +297,7 @@ public class GameMaster implements Runnable{
                 break;
             case MOVE:
                 moveCommand();
-                if (this.playerTurn.getDie().isEmpty()){
-                    if (player1 == playerTurn) nextPlayerTurn = player2;
-                    else nextPlayerTurn = player1;
-                    playerTurn.setHasRolled(false);
-                }
-                printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
+
                 break;
             case PIP:
                 pipCommand();
@@ -319,7 +314,7 @@ public class GameMaster implements Runnable{
                 testCommand();
                 break;
             case INVALID:
-                displayManager.addToCache(new AsciiString("Invalid command. Please type 'help' or 'hint' to see the list of commands."), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
+                displayManager.addToCache(new AsciiString("Invalid command\nPlease type 'help' or 'hint' to see the list of commands."), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
                 nextPlayerTurn = playerTurn;
                 break;
             default:
@@ -340,6 +335,10 @@ public class GameMaster implements Runnable{
     public void moveCommand(){
         int moveIndex = currentInput.getBytes()[0]-97;
         ArrayList<ArrayList<Integer>> moves = listMoves();
+        if(moves.isEmpty()){
+            displayManager.addToCache(new AsciiString("You cannot make a move without rolling your dice \nType 'help' or 'hint' to see the list of commands"), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
+            return;
+        }
         ArrayList<Integer> movePair = moves.get(moveIndex);
         int diceSize = Math.abs(movePair.get(0)-movePair.get(1));
         for (int i = 0;i < playerTurn.getDie().size(); i++) {
@@ -358,6 +357,14 @@ public class GameMaster implements Runnable{
         }
         else if (movePair.get(0) == -1) fromBarMove(movePair);
         else normalMove(movePair);
+
+        // Finished moving now check if need to change player or show their remaining moves
+        if (this.playerTurn.getDie().isEmpty()){
+            if (player1 == playerTurn) nextPlayerTurn = player2;
+            else nextPlayerTurn = player1;
+            playerTurn.setHasRolled(false);
+        }
+        printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
     }
     private void normalMove(ArrayList<Integer> movePair){
         dealer.moveAChecker(unOrder(movePair.get(0)),unOrder(movePair.get(1)));
