@@ -184,7 +184,7 @@ public class GameMaster implements Runnable{
             displayManager.printDisplay();
             displayManager.clearCache();
 
-            String input = getNextInput();
+            String input = requestNextInput();
             interpretCommand();
             executeCommand();
 
@@ -469,7 +469,7 @@ public class GameMaster implements Runnable{
 
 
     // Threaded stuff
-    private boolean inputReady;
+    private boolean waitingForInput;
     private boolean testMode;
     private Object lock;
     @Override
@@ -486,28 +486,29 @@ public class GameMaster implements Runnable{
     }
 
     public synchronized void processInput(String input) {
-        while (inputReady) {
+        currentInput = input;
+        waitingForInput = false;
+        notify(); // Notify that input is ready for processing
+        while (!waitingForInput) {
             try {
                 wait(); // Wait if input is already present
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
-        currentInput = input;
-        inputReady = true;
-        notify(); // Notify that input is ready for processing
+
     }
 
-    public synchronized String getNextInput() {
-        while (!inputReady) {
+    public synchronized String requestNextInput() {
+        waitingForInput = true;
+        notify(); // Notify that input has been consumed
+        while (waitingForInput) {
             try {
                 wait(); // Wait for input to be available
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
-        inputReady = false;
-        notify(); // Notify that input has been consumed
         return currentInput;
     }
 

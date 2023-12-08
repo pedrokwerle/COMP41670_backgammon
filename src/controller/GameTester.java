@@ -17,7 +17,8 @@ public class GameTester implements Runnable{
 
     @Override
     public void run() {
-        System.out.println("Started1");
+        // Wait at the beginning to be woken up by the game
+        // This is very necessary otherwise the threads will be out of sync
         synchronized (lock) {
             try {
                 lock.wait();
@@ -25,8 +26,6 @@ public class GameTester implements Runnable{
                 e.printStackTrace();
             }
         }
-        System.out.println("Started2");
-
 
         Keyboard key = new Keyboard();
         while (true) {
