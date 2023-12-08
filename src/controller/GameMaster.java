@@ -290,9 +290,8 @@ public class GameMaster implements Runnable{
                 }
                 else {
                     displayManager.addToCache(new AsciiString("You have already rolled"),0,BackgammonTable.BOTTOM_OFF_FRAME);
-                    printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
                 }
-
+                printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
                 nextPlayerTurn = playerTurn;
                 break;
             case MOVE:
