@@ -20,18 +20,14 @@ public class Main {
         Thread gameMasterThread = new Thread(gameMaster);
 
         GameTester gameTester = new GameTester(gameMaster, lock);
-        Thread gameTesterThread = new Thread(gameTester);
+        Thread inputThread = new Thread(gameTester);
 
         gameMasterThread.start(); // Start the GameMaster thread
-
-        synchronized (lock) {
-            gameTesterThread.start(); // Start the GameTester thread
-            lock.notify(); // Notify GameTester to start
-        }
+        inputThread.start(); // Start the GameTester thread
 
         try {
             gameMasterThread.join(); // Wait for GameMaster thread to finish
-            gameTesterThread.join(); // Wait for GameTester thread to finish
+            inputThread.join(); // Wait for GameTester thread to finish
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

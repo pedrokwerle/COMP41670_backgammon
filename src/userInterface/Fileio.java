@@ -6,18 +6,19 @@ public class Fileio {
     protected String filePath;
     BufferedReader reader;
 
-    public Fileio(String filePath) {
+    public Fileio(String filePath) throws IOException {
         this.filePath = filePath;
         this.openReader();
     }
 
-    private void openReader() {
-        InputStream in = getClass().getResourceAsStream(this.filePath);
-        if (in == null) {
-            // this is how we load file within editor (eg eclipse)
-            in = getClass().getResourceAsStream(this.filePath);
+    private void openReader() throws IOException {
+        try {
+            InputStream in = getClass().getResourceAsStream(this.filePath);
+            this.reader = new BufferedReader(new InputStreamReader(in));
         }
-        this.reader = new BufferedReader(new InputStreamReader(in));
+        catch(Exception e) {
+            throw new IOException("File not found");
+        }
 
     }
     private void closeReader() {

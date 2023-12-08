@@ -1,0 +1,7 @@
+a
+a
+dice 4 4
+a
+a
+a
+a

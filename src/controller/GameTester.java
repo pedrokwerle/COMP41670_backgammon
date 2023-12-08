@@ -1,9 +1,11 @@
 package controller;
 
+import userInterface.ColorsAscii;
 import userInterface.Fileio;
 import userInterface.Keyboard;
 
 import java.io.*;
+import java.util.Collections;
 
 public class GameTester implements Runnable{
 
@@ -42,18 +44,21 @@ public class GameTester implements Runnable{
         try {
             Fileio reader = new Fileio(filename);
 
-                String line;
+            String line;
 
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                    synchronized (lock) {
-                        gameMaster.processInput(line); // Send commands from file to GameMaster
-                    }
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                synchronized (lock) {
+                    gameMaster.processInput(line); // Send commands from file to GameMaster
                 }
-                gameMaster.setTestMode(false);
+            }
+            gameMaster.setTestMode(false);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            // This is what happens if the reading process fails, could be file not found (most common)
+            // or something else
+            gameMaster.setTestMode(false);
+            System.out.println(ColorsAscii.WHITE.toCode() +"Something went wrong, please try again");
         }
     }
 
