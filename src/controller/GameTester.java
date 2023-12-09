@@ -5,25 +5,24 @@ import userInterface.Fileio;
 import userInterface.Keyboard;
 
 import java.io.*;
-import java.util.Collections;
 
 public class GameTester implements Runnable{
 
     private final GameMaster gameMaster;
-    private final Object lock;
+    private final Object inputLock;
 
-    public GameTester(GameMaster gameMaster, Object lock){
+    public GameTester(GameMaster gameMaster, Object inputLock){
         this.gameMaster = gameMaster;
-        this.lock = lock;
+        this.inputLock = inputLock;
     }
 
     @Override
     public void run() {
         // Wait at the beginning to be woken up by the game
         // This is very necessary otherwise the threads will be out of sync
-        synchronized (lock) {
+        synchronized (inputLock) {
             try {
-                lock.wait();
+                inputLock.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -48,7 +47,7 @@ public class GameTester implements Runnable{
 
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
-                synchronized (lock) {
+                synchronized (inputLock) {
                     gameMaster.processInput(line); // Send commands from file to GameMaster
                 }
             }

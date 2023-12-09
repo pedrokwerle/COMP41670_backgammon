@@ -2,7 +2,6 @@ package model;
 
 import userInterface.ColorsAscii;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Player {
@@ -12,12 +11,21 @@ public class Player {
     private ColorsAscii playerColour;
     private boolean hasRolled;
     private int pipScore;
+    private int matchPoints;
     private boolean canBearOff;
 
 
     public Player(String playerName, ColorsAscii playerColour){
         this.playerName = playerName;
         this.playerColour = playerColour;
+    }
+
+    public int getMatchPoints() {
+        return matchPoints;
+    }
+
+    public void setMatchPoints(int matchPoints) {
+        this.matchPoints = matchPoints;
     }
 
     public boolean getCanBearOff() {

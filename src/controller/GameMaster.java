@@ -1,14 +1,13 @@
 package controller;
 import model.*;
-import userInterface.AsciiString;
-import userInterface.ColorsAscii;
-import userInterface.DisplayManager;
-import userInterface.Keyboard;
+import userInterface.*;
 
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Semaphore;
 
 public class GameMaster implements Runnable{
     Player player1;
@@ -22,11 +21,18 @@ public class GameMaster implements Runnable{
     Keyboard key;
     String currentInput;
     CommandType commandType;
+    boolean gameOver;
+    int gameValue;
 
-    public GameMaster(Object lock) {
+    public GameMaster(Object inputLock, DisplayManager displayManager, BlockingQueue<CommandType> matchChannel, Semaphore matchSemaphore) {
         this.key = new Keyboard();
         this.testMode = false;
-        this.lock = lock;
+        this.inputLock = inputLock;
+        this.gameOver = false;
+        this.displayManager = displayManager;
+        this.matchChannel = matchChannel;
+        this.matchSemaphore = matchSemaphore;
+        this.gameValue = 1; // Standard game value
     }
 
     public ArrayList<ArrayList<Integer>> listMoves(){
@@ -121,14 +127,6 @@ public class GameMaster implements Runnable{
     }
 
     public void startGame(){
-        Keyboard key = new Keyboard();
-        System.out.println("Please input Player 1's name: ");
-        this.player1 = new Player(key.getString(), ColorsAscii.WHITE);
-
-        System.out.println("Please input Player 2's name: ");
-        this.player2 = new Player(key.getString(), ColorsAscii.RED);
-
-        System.out.println("Player 1: "+player1.getPlayerName()+", Player 2: "+player2.getPlayerName());
 
         boolean hasPlayerOrder = false;
         Dice p1Roll = new Dice();
@@ -155,7 +153,6 @@ public class GameMaster implements Runnable{
         System.out.println(playerTurn.getPlayerName()+" goes first!");
         nextPlayerTurn = playerTurn;
 
-        this.displayManager = new DisplayManager(40,500);
 
         table = new BackgammonTable();
         table.initializeBoard();
@@ -168,16 +165,13 @@ public class GameMaster implements Runnable{
         // Initialization complete
 
 
-        synchronized (lock) {
-            lock.notify(); // Notify the waiting GameTester thread
+        synchronized (inputLock) {
+            inputLock.notify(); // Notify the waiting GameTester thread
         }
 
         this.gameLoop();
-        System.out.println("Congratulations, " + winnerPlayer.getPlayerName() +" has won the game!");
-
     }
     public void gameLoop(){
-        boolean gameOver = false;
         while(!gameOver){
             displayManager.addToCache(0,table, 0, 0);
             setPlayerFrame();
@@ -185,12 +179,30 @@ public class GameMaster implements Runnable{
             displayManager.clearCache();
 
             String input = requestNextInput();
-            interpretCommand();
+            commandType = Commander.interpretCommand(input);
             executeCommand();
 
             gameOver = isGameOver(table);
             playerTurn = nextPlayerTurn;
         }
+        this.endGame();
+    }
+    private void endGame(){
+        displayManager.clearCache();
+        winnerPlayer.setMatchPoints(player1.getMatchPoints() + gameValue);
+        displayManager.addToCache(new AsciiString(winnerPlayer.getPlayerName() +
+                " has won the game and " + gameValue + " points"),0,0);
+        displayManager.addToCache(new AsciiString("The current score tally is:\n" +
+                player1.getPlayerName() + " has " + player1.getMatchPoints() + " points\n" +
+                player2.getPlayerName() + " has " + player2.getMatchPoints() + " points"),0,1);
+        displayManager.printDisplay();
+        displayManager.clearCache();
+        try {
+            matchChannel.put(CommandType.INVALID); // Tell the match thread what game it is
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public void setPlayerFrame(){
@@ -244,36 +256,7 @@ public class GameMaster implements Runnable{
 
     // **Command section**
 
-    public void interpretCommand(){
-        // lowercase and remove leading or trailing spaces
-        currentInput = currentInput.toLowerCase().trim();
-        int numMoves = listMoves().size();
-        if(numMoves == 0){
-            numMoves = 1; // might be dangerous
-        }
-        if (Objects.equals(currentInput, "quit")) {
-            commandType = CommandType.QUIT;
-        }
-        else if (Objects.equals(currentInput, "roll")){
-            commandType = CommandType.ROLL;
-        }
-        else if (currentInput.matches("["+(char)('a'-1)+'-'+ (char)('a'+numMoves) + "]")){
-            commandType = CommandType.MOVE;
-        }
-        else if (Objects.equals(currentInput, "hint") || Objects.equals(currentInput.toLowerCase(), "help")){
-            commandType = CommandType.HINT;
-        }
-        else if (Objects.equals(currentInput, "pip")){
-            commandType = CommandType.PIP;
-        }
-        else if(currentInput.matches("test\\s.+")){
-            commandType = CommandType.TEST;
-        }
-        else if(currentInput.matches("dice\\s+\\d\\s+\\d")){
-            commandType = CommandType.DICE;
-        }
-        else commandType = CommandType.INVALID;
-    }
+
 
     public void executeCommand(){
         switch (commandType){
@@ -296,7 +279,6 @@ public class GameMaster implements Runnable{
                 break;
             case MOVE:
                 moveCommand();
-
                 break;
             case PIP:
                 pipCommand();
@@ -317,8 +299,10 @@ public class GameMaster implements Runnable{
                 nextPlayerTurn = playerTurn;
                 break;
             default:
+                wakeDaddyUp();
         }
     }
+
 
     private String testFilePath;
 
@@ -334,8 +318,16 @@ public class GameMaster implements Runnable{
     public void moveCommand(){
         int moveIndex = currentInput.getBytes()[0]-97;
         ArrayList<ArrayList<Integer>> moves = listMoves();
+
+        // When player enters a letter without rolling first
         if(moves.isEmpty()){
             displayManager.addToCache(new AsciiString("You cannot make a move without rolling your dice \nType 'help' or 'hint' to see the list of commands"), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
+            return;
+        }
+        // When player enters a letter that is not an available move
+        if(moveIndex > moves.size()-1) {
+            displayManager.addToCache(new AsciiString("You cannot this move, choose from the list of available moves"), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
+            printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
             return;
         }
         ArrayList<Integer> movePair = moves.get(moveIndex);
@@ -489,7 +481,7 @@ public class GameMaster implements Runnable{
     // Threaded stuff
     private boolean waitingForInput;
     private boolean testMode;
-    private Object lock;
+    private final Object inputLock;
     @Override
     public void run() {
         startGame();
@@ -532,6 +524,18 @@ public class GameMaster implements Runnable{
             }
         }
         return currentInput;
+    }
+
+    BlockingQueue<CommandType> matchChannel;
+    Semaphore matchSemaphore;
+
+    private synchronized void wakeDaddyUp(){
+        try {
+            matchChannel.put(commandType); // Tell the match thread what game it is
+            matchSemaphore.acquire();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 
 }
