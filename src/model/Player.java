@@ -47,20 +47,14 @@ public class Player {
 
     public ColorsAscii getPlayerColour(){return  this.playerColour;}
 
-    public ArrayList<Dice> rollMoves(){
+    public void rollMoves(){
         moveDie.clear();
         moveDie.add(new Dice());
         moveDie.add(new Dice());
         this.moveDie.get(0).rollDice();
         this.moveDie.get(1).rollDice();
 
-        if (this.moveDie.get(0).value == this.moveDie.get(1).value){
-            this.moveDie.add(new Dice());
-            this.moveDie.get(2).setValue(this.moveDie.get(0).value);
-            this.moveDie.add(new Dice());
-            this.moveDie.get(3).setValue(this.moveDie.get(0).value);
-        }
-        return moveDie;
+        addDoubles();
     }
 
     public ArrayList<Dice> getDie(){
@@ -68,6 +62,16 @@ public class Player {
     }
     public void setDie(ArrayList<Dice> rolls){
         this.moveDie = rolls;
+        addDoubles();
+    }
+
+    private void addDoubles() {
+        if (this.moveDie.get(0).value == this.moveDie.get(1).value){
+            this.moveDie.add(new Dice());
+            this.moveDie.get(2).setValue(this.moveDie.get(0).value);
+            this.moveDie.add(new Dice());
+            this.moveDie.get(3).setValue(this.moveDie.get(0).value);
+        }
     }
 
     public int getPipScore() {
@@ -86,7 +90,4 @@ public class Player {
         this.hasRolled = hasRolled;
     }
 
-    public void setMoveDie(ArrayList<Dice> moveDie) {
-        this.moveDie = moveDie;
-    }
 }

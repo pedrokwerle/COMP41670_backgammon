@@ -382,7 +382,7 @@ public class GameMaster implements Runnable{
         if (playerTurn.getHasRolled()) {
             ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
             moves = listMoves();
-
+            moves = removeDuplicateMoves(moves);
             displayManager.addToCache(new AsciiString("Possible moves"), 0, yPos);
             String string = new String();
             for (int i = 0; i < moves.size(); i++) {
@@ -394,6 +394,16 @@ public class GameMaster implements Runnable{
             }
             displayManager.addToCache(new AsciiString(string), 0, yPos + 1);
         }
+    }
+
+    public static ArrayList<ArrayList<Integer>> removeDuplicateMoves(ArrayList<ArrayList<Integer>> moves){
+        ArrayList<ArrayList<Integer>> newMoves = new ArrayList<>();
+        for (ArrayList<Integer> move : moves) {
+            if (!newMoves.contains(move)) {
+                newMoves.add(move);
+            }
+        }
+        return newMoves;
     }
 
     private void pipCommand(){
@@ -460,10 +470,8 @@ public class GameMaster implements Runnable{
         int num2 = Integer.parseInt(tokens[2]);
         die_1.setValue(num1);
         die_2.setValue(num2);
-        playerTurn.setMoveDie(new ArrayList<Dice>(List.of(die_1, die_2)));
+        playerTurn.setDie(new ArrayList<Dice>(List.of(die_1, die_2)));
         printMoves(BackgammonTable.BOTTOM_OFF_FRAME);
-
-
     }
 
     /** gives you the move index for the current players perspective given then objective index*/
