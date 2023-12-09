@@ -192,7 +192,7 @@ public class GameMaster implements Runnable{
     }
     private void endGame(){
         displayManager.clearCache();
-        winnerPlayer.setMatchPoints(player1.getMatchPoints() + gameValue);
+        winnerPlayer.setMatchPoints(winnerPlayer.getMatchPoints() + gameValue);
         displayManager.addToCache(new AsciiString(winnerPlayer.getPlayerName() +
                 " has won the game and " + gameValue + " points"),0,0);
         displayManager.addToCache(new AsciiString("The current score tally is:\n" +
@@ -200,8 +200,10 @@ public class GameMaster implements Runnable{
                 player2.getPlayerName() + " has " + player2.getMatchPoints() + " points"),0,1);
         displayManager.printDisplay();
         displayManager.clearCache();
+
+        // Wake up the match thread waiting so it notices the game is over
         try {
-            matchChannel.put(CommandType.INVALID); // Tell the match thread what game it is
+            matchChannel.put(CommandType.INVALID);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

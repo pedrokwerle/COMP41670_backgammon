@@ -119,10 +119,11 @@ public class MatchMaker {
                         "Current game is game number " + currentGameNumber+
                         "\nMatch length is " + this.matchLength + " games";
                 displayManager.addToCache(new AsciiString(message),0,BackgammonTable.BOTTOM_OFF_FRAME);
-                //displayManager.addToCache(new AsciiString(),0, BackgammonTable.BOTTOM_OFF_FRAME+3);
-
                 break;
             default:
+                // When the command type is not something the matchmaker can handle
+                // it either goes back to sleep (if the game is not over)
+                // or wakes up and notices that the game ended
         }
     }
 }
