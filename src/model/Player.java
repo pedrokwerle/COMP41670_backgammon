@@ -13,12 +13,22 @@ public class Player {
     private int pipScore;
     private int matchPoints;
     private boolean canBearOff;
+    private boolean canDouble;
 
 
     public Player(String playerName, ColorsAscii playerColour){
         this.playerName = playerName;
         this.playerColour = playerColour;
         this.canBearOff = false;
+        this.canDouble = true;
+    }
+
+    public boolean getCanDouble() {
+        return canDouble;
+    }
+
+    public void setCanDouble(boolean canDouble) {
+        this.canDouble = canDouble;
     }
 
     public int getMatchPoints() {

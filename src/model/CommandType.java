@@ -1,4 +1,4 @@
-package controller;
+package model;
 
 public enum CommandType {
     INVALID(""),
@@ -9,7 +9,7 @@ public enum CommandType {
     HINT("hint/help: show this message"),
     DICE("dice <int> <int> : roll two dice with the values equals to the given numbers"),
     TEST("test <filepath> : run all the moves in a test text file"),
-    DOUBLE("double: I don't know yet"),
+    DOUBLE("double: ask other player to double the stake of the game"),
     SCORE("score: display the match score");
 
     private final String description;

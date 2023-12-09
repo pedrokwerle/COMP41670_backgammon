@@ -29,7 +29,7 @@ public class GameTester implements Runnable{
         }
 
         Keyboard key = new Keyboard();
-        while (true) {
+        while (!gameMaster.gameOver) {
             if (gameMaster.testMode()) {
                 executeCommandsFromFile(gameMaster.getTestFilePath()); // Replace "commands.txt" with your file name
             } else {
@@ -39,12 +39,18 @@ public class GameTester implements Runnable{
         }
     }
 
+    /**
+     * Spits inputs to the gameMaster from a text file, line by line
+     * until the file is over.
+     * If the file is not found or an error occurs in the reading process
+     * the function will print an error message and give up
+     *
+     * @param filename full path of the test text file
+     */
     private void executeCommandsFromFile(String filename) {
         try {
             Fileio reader = new Fileio(filename);
-
             String line;
-
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
                 synchronized (inputLock) {
@@ -54,8 +60,6 @@ public class GameTester implements Runnable{
             gameMaster.setTestMode(false);
 
         } catch (IOException e) {
-            // This is what happens if the reading process fails, could be file not found (most common)
-            // or something else
             gameMaster.setTestMode(false);
             System.out.println(ColorsAscii.WHITE.toCode() +"Something went wrong, please try again");
         }

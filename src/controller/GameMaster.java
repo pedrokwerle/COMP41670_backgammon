@@ -4,6 +4,7 @@ import userInterface.*;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
@@ -15,14 +16,16 @@ public class GameMaster implements Runnable{
     Player playerTurn;
     Player nextPlayerTurn;
     Player winnerPlayer;
+    Player loserPlayer; // Only one of these will have a player value at any given time
     DisplayManager displayManager;
     Dealer dealer;
     BackgammonTable table;
     Keyboard key;
     String currentInput;
     CommandType commandType;
+    EndGameType endGameType;
     boolean gameOver;
-    int gameValue;
+    int gameStake;
 
     public GameMaster(Object inputLock, DisplayManager displayManager, BlockingQueue<CommandType> matchChannel, Semaphore matchSemaphore) {
         this.key = new Keyboard();
@@ -32,7 +35,8 @@ public class GameMaster implements Runnable{
         this.displayManager = displayManager;
         this.matchChannel = matchChannel;
         this.matchSemaphore = matchSemaphore;
-        this.gameValue = 1; // Standard game value
+        this.gameStake = 1; // Standard game value
+        this.endGameType = EndGameType.SINGLE;
     }
 
     public ArrayList<ArrayList<Integer>> listMoves(){
@@ -192,14 +196,24 @@ public class GameMaster implements Runnable{
     }
     private void endGame(){
         displayManager.clearCache();
-        winnerPlayer.setMatchPoints(winnerPlayer.getMatchPoints() + gameValue);
-        displayManager.addToCache(new AsciiString(winnerPlayer.getPlayerName() +
-                " has won the game and " + gameValue + " points"),0,0);
+        if(endGameType == EndGameType.FORFEIT){
+            loserPlayer.setMatchPoints(loserPlayer.getMatchPoints() + gameStake*endGameType.getStake());
+            displayManager.addToCache(new AsciiString(loserPlayer.getPlayerName() +
+                    " has lost the game in a " + endGameType.getDescription() + " and was awarded " + gameStake * endGameType.getStake() + " point(s)"), 0, 0);
+
+        }
+        else {
+            winnerPlayer.setMatchPoints(winnerPlayer.getMatchPoints() + gameStake*endGameType.getStake());
+            displayManager.addToCache(new AsciiString(winnerPlayer.getPlayerName() +
+                    " has won the game in a " + endGameType.getDescription() + " and was awarded " + gameStake * endGameType.getStake() + " point(s)"), 0, 0);
+        }
+
         displayManager.addToCache(new AsciiString("The current score tally is:\n" +
-                player1.getPlayerName() + " has " + player1.getMatchPoints() + " points\n" +
-                player2.getPlayerName() + " has " + player2.getMatchPoints() + " points"),0,1);
+                player1.getPlayerName() + " has " + player1.getMatchPoints() + " point(s)\n" +
+                player2.getPlayerName() + " has " + player2.getMatchPoints() + " point(s)"), 0, 1);
         displayManager.printDisplay();
         displayManager.clearCache();
+
 
         // Wake up the match thread waiting so it notices the game is over
         try {
@@ -209,6 +223,7 @@ public class GameMaster implements Runnable{
         }
 
     }
+
 
     public void setPlayerFrame(){
         if (Objects.equals(playerTurn.getPlayerColour(), ColorsAscii.RED)){
@@ -224,18 +239,82 @@ public class GameMaster implements Runnable{
     }
 
 
-    // Returns true if the game has ended and sets the winning player in winnerPlayer
-    private boolean isGameOver(BackgammonTable table){
+    /**
+     * Returns true if the game has ended and sets the winning player in winnerPlayer
+     * Also checks what type of end it is (single, gammon or backgammon)
+     */
+     private boolean isGameOver(BackgammonTable table){
         Lane redBearArea = table.getRedBearArea();
         Lane whiteBearArea = table.getWhiteBearArea();
+        Lane barArea = table.getBarArea();
+        List<Lane> redHomeArea =  table.getLanes().subList(18,23);
+        List<Lane> whiteHomeArea = table.getLanes().subList(6,11);
 
+
+        if(gameOver){
+            return true;
+        }
+
+        // Check if someone won
         if(redBearArea.getSize() == BackgammonTable.TOTAL_PLAYER_CHECKER_NUM){
             winnerPlayer = playerTurn;
+            // Check if gammon or backgammon
+            if (whiteBearArea.getSize() == 0){ // this means it's already at least a gammon
+                boolean barHasWhite = false;
+                for (Checker checker : barArea.getCheckers()){
+                    if (checker.getColor() == ColorsAscii.WHITE) {
+                        barHasWhite = true;
+                        break;
+                    }
+                }
+                boolean homeAreaHasWhite = false;
+                for (Lane lane : whiteHomeArea){
+                    for (Checker checker : lane.getCheckers()){
+                        if (checker.getColor() == ColorsAscii.WHITE) {
+                            homeAreaHasWhite = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (barHasWhite || homeAreaHasWhite){
+                    endGameType = EndGameType.BACKGAMMON;
+                }
+                else endGameType = EndGameType.GAMMON;
+                return true;
+            }
             return true;
         }
         else if (whiteBearArea.getSize() == BackgammonTable.TOTAL_PLAYER_CHECKER_NUM){
             winnerPlayer = playerTurn;
+            // Check if gammon or backgammon
+            if (redBearArea.getSize() == 0) { // this means it's already at least a gammon
+                boolean barHasRed = false;
+                for (Checker checker : barArea.getCheckers()) {
+                    if (checker.getColor() == ColorsAscii.RED) {
+                        barHasRed = true;
+                        break;
+                    }
+                }
+                boolean homeAreaHasRed = false;
+                for (Lane lane : redHomeArea) {
+                    for (Checker checker : lane.getCheckers()) {
+                        if (checker.getColor() == ColorsAscii.RED) {
+                            homeAreaHasRed = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (barHasRed || homeAreaHasRed) {
+                    endGameType = EndGameType.BACKGAMMON;
+                } else {
+                    endGameType = EndGameType.GAMMON;
+                }
+                return true;
+            }
             return true;
+
         }
         else return false;
 
@@ -299,12 +378,15 @@ public class GameMaster implements Runnable{
             case TEST:
                 testCommand();
                 break;
+            case DOUBLE:
+                doubleCommand();
+                break;
             case INVALID:
                 displayManager.addToCache(new AsciiString("Invalid command\nPlease type 'help' or 'hint' to see the list of commands."), 0 ,BackgammonTable.BOTTOM_OFF_FRAME);
                 nextPlayerTurn = playerTurn;
                 break;
             default:
-                wakeDaddyUp();
+                wakeMatchThread();
         }
     }
 
@@ -321,7 +403,7 @@ public class GameMaster implements Runnable{
     }
 
     public void moveCommand(){
-        int moveIndex = currentInput.getBytes()[0]-97;
+        int moveIndex = currentInput.getBytes()[0]-97; // - 97 to convert character numbers into actual numbers
         ArrayList<ArrayList<Integer>> moves = listMoves();
 
         // When player enters a letter without rolling first
@@ -344,7 +426,6 @@ public class GameMaster implements Runnable{
             }
         }
 
-        // TODO: make kill move after from bar move
         if (movePair.get(1)>=24){
             bearOffMove(movePair);
         }
@@ -409,6 +490,7 @@ public class GameMaster implements Runnable{
     }
 
     private void pipCommand(){
+        // TODO: make checkers in the bar count for 25 pip score
         // reordering the lanes for each colour to make finding the possible moves easier.
         ArrayList<Lane> lanes = new ArrayList<>();
 
@@ -474,6 +556,59 @@ public class GameMaster implements Runnable{
         die_2.setValue(num2);
         playerTurn.setDie(new ArrayList<Dice>(List.of(die_1, die_2)));
         printMoves(BackgammonTable.BOTTOM_OFF_FRAME);
+    }
+    private void doubleCommand(){
+        // Communicate with players
+        String message;
+        Player askingPlayer = playerTurn;
+        Player respondingPlayer;
+        if(Objects.equals(askingPlayer,player1)){
+            respondingPlayer = player2;
+        }
+        else {
+            respondingPlayer = player1;
+        }
+
+        // If the player has just doubled they cannot double
+        if (!askingPlayer.getCanDouble()){
+            message = "You cannot double at this time";
+            printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
+        }
+        // If the player has already rolled this turn they cannot double
+        else if (askingPlayer.getHasRolled()){
+            message = "You cannot double at this time";
+            printMoves(BackgammonTable.BOTTOM_OFF_FRAME+1);
+        }
+        else {
+            message = askingPlayer.getPlayerName() + " has asked for double, \n" + respondingPlayer.getPlayerName() + " do you wish to accept? (accept/reject)";
+            System.out.println(ColorsAscii.WHITE.toCode() + message);
+            boolean inputFlag = true;
+            String input;
+            while (inputFlag) {
+                input = requestNextInput().toLowerCase().trim();
+                if (input.matches("accept")) {
+                    gameStake = gameStake * 2;
+                    message = respondingPlayer.getPlayerName() + " accepts the double, the game is now worth " + gameStake + " points";
+                    askingPlayer.setCanDouble(false);
+                    respondingPlayer.setCanDouble(true);
+
+                    inputFlag = false;
+                } else if (input.matches("reject")) {
+                    message = respondingPlayer.getPlayerName() + " rejects the double";
+                    gameOver = true;
+                    endGameType = EndGameType.FORFEIT;
+                    loserPlayer = respondingPlayer;
+
+                    inputFlag = false;
+                } else {
+                    message = "Please enter a correct response.";
+                    System.out.println(ColorsAscii.WHITE.toCode() + message);
+                }
+
+            }
+        }
+        System.out.println(ColorsAscii.WHITE.toCode() + message);
+
     }
 
     /** gives you the move index for the current players perspective given then objective index*/
@@ -575,7 +710,7 @@ public class GameMaster implements Runnable{
     BlockingQueue<CommandType> matchChannel;
     Semaphore matchSemaphore;
 
-    private synchronized void wakeDaddyUp(){
+    private synchronized void wakeMatchThread(){
         try {
             matchChannel.put(commandType); // Tell the match thread what game it is
             matchSemaphore.acquire();

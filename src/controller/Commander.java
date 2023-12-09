@@ -1,5 +1,7 @@
 package controller;
 
+import model.CommandType;
+
 import java.util.Objects;
 
 public class Commander {
@@ -30,6 +32,9 @@ public class Commander {
         }
         else if(currentInput.matches("score")){
             commandType = CommandType.SCORE;
+        }
+        else if(currentInput.matches("double")){
+            commandType = CommandType.DOUBLE;
         }
         else commandType = CommandType.INVALID;
 

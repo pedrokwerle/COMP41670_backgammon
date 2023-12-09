@@ -44,7 +44,7 @@ public class Display {
                 }
             }
         }
-        return rowsNum;
+        return lastRow+1;
     }
     public void resetDisplay(){
         for (int row = 0; row < rowsNum; row++){

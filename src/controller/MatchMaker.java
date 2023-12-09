@@ -1,10 +1,10 @@
 package controller;
 
 import model.BackgammonTable;
+import model.CommandType;
 import model.Player;
 import userInterface.*;
 
-import java.awt.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
@@ -30,9 +30,48 @@ public class MatchMaker {
     public void startMatch(){
         matchConfiguration();
         startGame();
+        while (currentGameNumber < matchLength) {
+            currentGameNumber += 1;
+            System.out.println(ColorsAscii.WHITE.toCode() + "Starting game number " + currentGameNumber);
+            //try {
+            //   //this.wait(2000); // Waits for 2 seconds to start new game
+            //} catch (InterruptedException e) {
+            //    Thread.currentThread().interrupt();
+            //}
+            startGame();
 
+        }
+        endMatch();
     }
     public void endMatch(){
+        Player winner;
+        Player loser;
+        if (player1.getMatchPoints() > player2.getMatchPoints()){
+            winner = player1;
+            loser = player2;
+        }
+        else {
+            winner = player2;
+            loser = player1;
+        }
+        System.out.println(ColorsAscii.WHITE.toCode() +
+                winner.getPlayerName() + " has won the match with " + winner.getMatchPoints() + " points " +
+                "versus " + loser.getPlayerName() + " with " + loser.getMatchPoints() + " points");
+        System.out.println(ColorsAscii.WHITE.toCode() + "Would you like to play another match? (y/n)");
+        boolean inputFlag = true;
+        while(inputFlag){
+            String input = key.getString().toLowerCase().trim();
+            if (input.matches("y")){
+                startMatch();
+            }
+            else if (input.matches("n")){
+                System.exit(42);
+            }
+            else{
+                String message = "Please enter a correct response.";
+                System.out.println(ColorsAscii.WHITE.toCode() + message);
+            }
+        }
 
     }
     public synchronized void startGame(){
@@ -57,10 +96,11 @@ public class MatchMaker {
         
         // Do all end of game processing
         processGameOver();
-        
+
+
         try {
             gameMasterThread.join(); // Wait for GameMaster thread to finish
-            inputThread.join(); // Wait for GameTester thread to finish
+            inputThread.stop();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -84,19 +124,7 @@ public class MatchMaker {
     }
 
     private void processGameOver() {
-        if(currentGameNumber == matchLength){
-            endMatch();
-        }
-        else {
-            currentGameNumber += 1;
-            System.out.println(ColorsAscii.WHITE.toCode() + "Starting game number " + currentGameNumber);
-            try {
-                this.wait(2000); // Waits for 2 seconds to start new game
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            startGame();
-        }
+
     }
 
     public void waitForGame(){

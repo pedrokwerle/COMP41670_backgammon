@@ -75,8 +75,6 @@ public class BackgammonTable implements Displayable {
 
         }
 
-        // Test for end game
-        //for (int i = 0; i<14;i++) this.redBearArea.addChecker(new Checker(ColorsAscii.RED));
     }
 
     public Lane getLane(int laneNum){
