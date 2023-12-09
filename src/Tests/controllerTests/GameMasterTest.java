@@ -39,10 +39,6 @@ class GameMasterTest {
     }
 
     @Test
-    void unOrder() {
-    }
-
-    @Test
     void run() {
     }
 
