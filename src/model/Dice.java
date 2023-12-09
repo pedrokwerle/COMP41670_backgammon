@@ -6,7 +6,7 @@ import userInterface.Displayable;
 import java.util.random.RandomGenerator;
 
 public class Dice implements Displayable {
-    private final int NUMBER_OF_SIDES = 6;
+    public final int NUMBER_OF_SIDES = 6;
     int value;
 
     public Dice(){

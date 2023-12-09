@@ -1,0 +1,11 @@
+dice 6 6
+a
+b
+roll
+dice 1 5
+c
+d
+roll
+dice 1 1
+a
+a

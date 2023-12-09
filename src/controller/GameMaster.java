@@ -39,6 +39,7 @@ public class GameMaster implements Runnable{
         ArrayList<Lane> lanes = new ArrayList<>();
         ArrayList<ArrayList<Integer>> moves = new ArrayList<>();
 
+        playerTurn.setCanBearOff(checkCanPlayerBearOff());
 
         // reordering the lanes for each colour to make finding the possible moves easier.
         if (playerTurn.getPlayerColour() == ColorsAscii.RED){
@@ -98,9 +99,11 @@ public class GameMaster implements Runnable{
                     // check if moving from this lane to that with the dice is valid
                     if (i+playerTurn.getDie().get(j).getValue() >= 24) {
                         // can bear off ** need to add checker that all pieces are home corner**
-                        move.add(i);
-                        move.add(24);
-                        moves.add(move);
+                        if (playerTurn.getCanBearOff()){
+                            move.add(i);
+                            move.add(24);
+                            moves.add(move);
+                        }
                     }
                     else if (lanes.get(i+playerTurn.getDie().get(j).getValue()).getColour() == playerTurn.getPlayerColour()){
                         //is a possible move, just adds to the lanes
@@ -343,10 +346,10 @@ public class GameMaster implements Runnable{
         if (movePair.get(1)>=24){
             bearOffMove(movePair);
         }
+        else if (movePair.get(0) == -1) fromBarMove(movePair);
         else if (table.getLanes().get(unOrder(movePair.get(1))).getColour() != playerTurn.getPlayerColour() && table.getLanes().get(unOrder(movePair.get(1))).getSize() == 1){
             barMove(movePair);
         }
-        else if (movePair.get(0) == -1) fromBarMove(movePair);
         else normalMove(movePair);
 
         // Finished moving now check if game needs to change player or show their remaining moves
@@ -362,6 +365,9 @@ public class GameMaster implements Runnable{
     }
 
     private void fromBarMove(ArrayList<Integer> movePair) {
+        if (table.getLanes().get(unOrder(movePair.get(1))).getColour() != playerTurn.getPlayerColour() && table.getLanes().get(unOrder(movePair.get(1))).getSize() == 1){
+            dealer.moveToBar(unOrder(movePair.get(1)));
+        }
         dealer.moveFromBar(unOrder(movePair.get(1)), playerTurn.getPlayerColour());
     }
     private void barMove(ArrayList<Integer> movePair){
@@ -460,7 +466,11 @@ public class GameMaster implements Runnable{
 
     }
 
+    /** gives you the move index for the current players perspective given then objective index*/
     public int unOrder(int moveIndex){
+        if (moveIndex == -1){
+            return moveIndex;
+        }
         if (playerTurn.getPlayerColour() == ColorsAscii.RED) {
             if (moveIndex < BackgammonTable.LANES_PER_ROW) {
                 moveIndex = BackgammonTable.TOTAL_LANES - 1 - moveIndex;
@@ -476,7 +486,33 @@ public class GameMaster implements Runnable{
         return moveIndex;
     }
 
-
+    private boolean checkCanPlayerBearOff(){
+        boolean canBearOff = true;
+        ColorsAscii currentPlayerColor = playerTurn.getPlayerColour();
+        if (currentPlayerColor == ColorsAscii.WHITE){
+            for (int i = 0; i < 18; i++) {
+                if (table.getLane(i).getColour() == currentPlayerColor){
+                    canBearOff = false;
+                    break;
+                }
+            }
+        }
+        if (currentPlayerColor == ColorsAscii.RED){
+            for (int i = 0; i < 6; i++) {
+                if (table.getLane(i).getColour() == currentPlayerColor){
+                    canBearOff = false;
+                    break;
+                }
+            }
+            for (int i = 12; i < 24; i++) {
+                if (table.getLane(i).getColour() == currentPlayerColor){
+                    canBearOff = false;
+                    break;
+                }
+            }
+        }
+        return canBearOff;
+    }
 
     // Threaded stuff
     private boolean waitingForInput;

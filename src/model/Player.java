@@ -18,6 +18,7 @@ public class Player {
     public Player(String playerName, ColorsAscii playerColour){
         this.playerName = playerName;
         this.playerColour = playerColour;
+        this.canBearOff = false;
     }
 
     public int getMatchPoints() {
