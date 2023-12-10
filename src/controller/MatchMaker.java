@@ -33,11 +33,6 @@ public class MatchMaker {
         while (currentGameNumber < matchLength) {
             currentGameNumber += 1;
             System.out.println(ColorsAscii.WHITE.toCode() + "Starting game number " + currentGameNumber);
-            //try {
-            //   //this.wait(2000); // Waits for 2 seconds to start new game
-            //} catch (InterruptedException e) {
-            //    Thread.currentThread().interrupt();
-            //}
             startGame();
 
         }
