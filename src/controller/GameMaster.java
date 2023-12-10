@@ -598,6 +598,7 @@ public class GameMaster implements Runnable{
                         table.doubleCubePosition = 2;
 
                     }
+                    table.getDoubleCube().doTheDouble();
 
                     inputFlag = false;
                 } else if (input.matches("reject")) {

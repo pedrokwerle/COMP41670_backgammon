@@ -23,7 +23,7 @@ public class BackgammonTable implements Displayable {
     Lane barArea;
     Lane redBearArea;
     Lane whiteBearArea;
-    Checker doubleCube;
+    DoubleCube doubleCube;
     public int doubleCubePosition;
 
 
@@ -34,7 +34,7 @@ public class BackgammonTable implements Displayable {
         this.barArea = new LaneUpward();
         this.redBearArea = new LaneDownward();
         this.whiteBearArea = new LaneUpward();
-        this.doubleCube = new Checker(ColorsAscii.BLUE);
+        this.doubleCube = new DoubleCube();
         doubleCube.getArt().setFileLocation("/resources/double_cube.txt");
         doubleCubePosition = 0;
     }
@@ -101,6 +101,9 @@ public class BackgammonTable implements Displayable {
         return whiteBearArea;
     }
 
+    public DoubleCube getDoubleCube() {
+        return doubleCube;
+    }
     // Ascii art section:
 
     AsciiArt asciiArt;
