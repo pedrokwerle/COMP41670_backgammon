@@ -55,4 +55,8 @@ public class DisplayManager {
         }
         this.display.print();
     }
+
+    public ArrayList<Displayable> getRenderCache() {
+        return renderCache;
+    }
 }
