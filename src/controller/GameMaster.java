@@ -591,6 +591,13 @@ public class GameMaster implements Runnable{
                     message = respondingPlayer.getPlayerName() + " accepts the double, the game is now worth " + gameStake + " points";
                     askingPlayer.setCanDouble(false);
                     respondingPlayer.setCanDouble(true);
+                    if(respondingPlayer.getPlayerColour() == ColorsAscii.RED){
+                        table.doubleCubePosition = 22;
+                    }
+                    else{
+                        table.doubleCubePosition = 2;
+
+                    }
 
                     inputFlag = false;
                 } else if (input.matches("reject")) {

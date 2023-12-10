@@ -1,6 +1,6 @@
 package Tests.controllerTests;
 
-import controller.CommandType;
+//import controller.CommandType;
 import controller.GameMaster;
 import controller.MatchMaker;
 import model.BackgammonTable;

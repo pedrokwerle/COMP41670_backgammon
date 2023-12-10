@@ -18,9 +18,13 @@ public class BackgammonTable implements Displayable {
     public static final int BAR_WIDTH = 7;
     public static final int BOTTOM_OFF_FRAME = 28; // first blank line under the frame
 
+    public static final int DOUBLE_CUBE_X_POS = 114;
+
     Lane barArea;
     Lane redBearArea;
     Lane whiteBearArea;
+    Checker doubleCube;
+    public int doubleCubePosition;
 
 
 
@@ -30,6 +34,9 @@ public class BackgammonTable implements Displayable {
         this.barArea = new LaneUpward();
         this.redBearArea = new LaneDownward();
         this.whiteBearArea = new LaneUpward();
+        this.doubleCube = new Checker(ColorsAscii.BLUE);
+        doubleCube.getArt().setFileLocation("/resources/double_cube.txt");
+        doubleCubePosition = 0;
     }
 
     public void initializeBoard(){
@@ -137,6 +144,11 @@ public class BackgammonTable implements Displayable {
             this.asciiArt.addComponent(this.lanes.get(i),xpos,ypos);
             this.lanes.get(i).renderArt();
             xpos += LANE_SPACING;
+        }
+        // Double coube
+        if(doubleCubePosition != 0){
+            this.asciiArt.addComponent(doubleCube, DOUBLE_CUBE_X_POS, doubleCubePosition);
+            this.doubleCube.renderArt();
         }
 
         // Bar area
