@@ -21,7 +21,7 @@ public class MatchMaker {
 
     public MatchMaker(){
         matchChannel = new LinkedBlockingQueue<>();
-        this.displayManager = new DisplayManager(100,500);
+        this.displayManager = new DisplayManager(100,130);
         this.key = new Keyboard();
         this.currentGameNumber = 1;
         this.matchSemaphore = new Semaphore(0);

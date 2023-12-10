@@ -26,13 +26,13 @@ public class Display {
     public void print(){
         int lastRow = removeWhiteSpace();
         for(int row = 0; row< lastRow; row++){
-            System.out.println();
+
             for(int col = 0; col< colsNum; col++){
                 PixelAscii pixel = this.pixelGrid[row][col];
                 System.out.print(pixel.getColor().toCode()+pixel.getCharacter());
             }
+            System.out.print('\n');
         }
-        System.out.println();
     }
     private int removeWhiteSpace(){
         int lastRow;
