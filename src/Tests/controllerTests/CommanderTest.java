@@ -1,7 +1,7 @@
 package Tests.controllerTests;
 
-import controller.CommandType;
 import controller.Commander;
+import model.CommandType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
