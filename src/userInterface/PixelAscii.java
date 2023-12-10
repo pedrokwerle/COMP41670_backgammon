@@ -24,4 +24,6 @@ public class PixelAscii {
     public void setColor(ColorsAscii color) {
         this.color = color;
     }
+
+
 }
