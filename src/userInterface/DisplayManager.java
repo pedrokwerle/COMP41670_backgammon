@@ -48,13 +48,6 @@ public class DisplayManager {
         }
     }
 
-    public void printString(String string, int yPos, int xPos){
-        for (int charNum = 0; charNum < string.length(); charNum++){
-            PixelAscii pixel = new PixelAscii(string.charAt(charNum), ColorsAscii.WHITE);
-            this.display.setPixel(pixel, yPos, xPos);
-        }
-    }
-
     public void printDisplay(){
         this.display.resetDisplay();
         for (Displayable object : renderCache){

@@ -2,17 +2,15 @@ package controller;
 
 import model.BackgammonTable;
 import model.Checker;
-import model.MovesLog;
 import userInterface.ColorsAscii;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Dealer {
-    MovesLog log;
+
     BackgammonTable table;
      public Dealer(BackgammonTable table){
-         this.log = new MovesLog();
          this.table = table;
      }
 

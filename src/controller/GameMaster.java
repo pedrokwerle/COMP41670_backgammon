@@ -584,6 +584,7 @@ public class GameMaster implements Runnable{
             System.out.println(ColorsAscii.WHITE.toCode() + message);
             boolean inputFlag = true;
             String input;
+            // loop until player gives a good response
             while (inputFlag) {
                 input = requestNextInput().toLowerCase().trim();
                 if (input.matches("accept")) {
@@ -592,10 +593,10 @@ public class GameMaster implements Runnable{
                     askingPlayer.setCanDouble(false);
                     respondingPlayer.setCanDouble(true);
                     if(respondingPlayer.getPlayerColour() == ColorsAscii.RED){
-                        table.doubleCubePosition = 22;
+                        table.doubleCubePosition = 22; // bottom of the table (red players home area)
                     }
                     else{
-                        table.doubleCubePosition = 2;
+                        table.doubleCubePosition = 2; // top of the table (white players home area)
 
                     }
                     table.getDoubleCube().doTheDouble();
