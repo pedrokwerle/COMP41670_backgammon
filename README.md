@@ -1,6 +1,10 @@
 # COMP41670_backgammon
 Backgammon game for group assignment of COMP41670
 
+Allows two players to play one or more matches of the game backgammon. Matches can last any number of games.
+All features of real backgammon are implemented, such as calling a double, winning by gammon or backgammon, etc.
+A help command is available that shows all available commands in the game.
+
 
 # How to use display backend
 
