@@ -21,10 +21,10 @@ public class MatchMaker {
 
     public MatchMaker(){
         matchChannel = new LinkedBlockingQueue<>();
-        this.displayManager = new DisplayManager(100,130);
+        this.displayManager = new DisplayManager(100,150);
         this.key = new Keyboard();
         this.currentGameNumber = 1;
-        this.matchSemaphore = new Semaphore(0);
+
     }
 
     public void startMatch(){
@@ -67,9 +67,10 @@ public class MatchMaker {
                 System.out.println(ColorsAscii.WHITE.toCode() + message);
             }
         }
-
     }
     public synchronized void startGame(){
+        this.matchSemaphore = new Semaphore(0);
+
         Object inputLock = new Object(); // Create a lock object for the input and game thread to communicate
 
         GameMaster gameMaster = new GameMaster(inputLock, displayManager, matchChannel, matchSemaphore);
@@ -95,7 +96,7 @@ public class MatchMaker {
 
         try {
             gameMasterThread.join(); // Wait for GameMaster thread to finish
-            inputThread.stop();
+            //inputThread.stop();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
