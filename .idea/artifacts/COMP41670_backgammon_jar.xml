@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="COMP41670_backgammon:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/COMP41670_backgammon_jar</output-path>
+    <root id="archive" name="COMP41670_backgammon.jar">
+      <element id="module-output" name="COMP41670_backgammon" />
+    </root>
+  </artifact>
+</component>
