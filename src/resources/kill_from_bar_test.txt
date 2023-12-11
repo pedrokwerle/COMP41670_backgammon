@@ -1,4 +1,4 @@
-dice 6 6
+dice 6 5
 a
 b
 roll
