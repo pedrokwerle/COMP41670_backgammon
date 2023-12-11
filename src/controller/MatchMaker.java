@@ -131,7 +131,6 @@ public class MatchMaker {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-
     }
 
     public void executeCommand(CommandType commandType){
